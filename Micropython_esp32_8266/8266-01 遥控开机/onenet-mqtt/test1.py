@@ -41,7 +41,7 @@ def run():
                 myMQTT.mqttInit()
             except:
                 print("resub error")
-        # 断网直接重启
-        if not myMQTT.wifiobj.mywifi.isconnected():
+        # 断网/重连次数过多直接重启
+        if not myMQTT.wifiobj.mywifi.isconnected() or resub_count > 3:
             machine.reset()
         time.sleep(5)
