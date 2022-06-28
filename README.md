@@ -8,3 +8,7 @@
 
 
 对于Micropython库各种用法及组件、arduino-esp32-ble库可参考github搜索History_mpy仓库。
+
+# 软串口源码&编译：
+- esp32: https://github.com/ywz978020607/micropython/tree/esp32soft
+- esp8266: https://github.com/ywz978020607/micropython/tree/8266soft
