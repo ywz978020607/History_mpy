@@ -10,8 +10,8 @@ void Mymouse::set_up(){
     analogReadResolution(adc_bit);
 
     // init gpio when not interrupt
-    pinMode(left_key, INPUT_PULLDOWN); // INPUT
-    pinMode(right_key,INPUT_PULLDOWN);
+    pinMode(left_key, INPUT_PULLUP); // INPUT
+    pinMode(right_key,INPUT_PULLUP);
 }
 
 void Mymouse::self_main(){
@@ -23,28 +23,33 @@ void Mymouse::self_main(){
     // press_key(MOUSE_RIGHT);
     // }
     // KEY非中断
-    if(digitalRead(left_key) == HIGH){
+    if(digitalRead(left_key) == LOW){
         press_key(MOUSE_LEFT);
     }
-    if(digitalRead(right_key) == HIGH){
+    if(digitalRead(right_key) == LOW){
         press_key(MOUSE_RIGHT);
     }
 
     // 摇杆
-    temp_val = get_ADC(point_x);
+    temp_val = get_ADC(point_x, adc_bias_point);
+//    Serial.println("point_x");
+//    Serial.println(temp_val, DEC);
+//    Serial.println(change_speed(temp_val), DEC);
     if(temp_val != 0)
-    move_point_down(change_speed(temp_val));
+    move_point_right(change_speed(temp_val, true));
 
-    temp_val = get_ADC(point_y);
+    temp_val = get_ADC(point_y, adc_bias_point);
     if(temp_val != 0)
-    move_point_right(change_speed(temp_val));
+    move_point_down(change_speed(temp_val, true));
 
-    temp_val = get_ADC(scroll_x);
+    temp_val = get_ADC(scroll_x, adc_bias_scroll);
     if(temp_val != 0)
-    move_scroll_up(change_speed(temp_val, true));
+    move_scroll_right(change_speed(temp_val, true));
 
-    temp_val = get_ADC(scroll_y);
+    temp_val = get_ADC(scroll_y, adc_bias_scroll);
+//    Serial.println("scroll_y");
+//    Serial.println(temp_val, DEC);
     if(temp_val != 0)
-    move_scroll_right(change_speed(temp_val));
+    move_scroll_up(change_speed(temp_val));
     // 
 }

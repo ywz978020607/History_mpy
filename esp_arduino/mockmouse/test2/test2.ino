@@ -14,7 +14,7 @@ void setup() {
 void loop() {
   if(mymouse.isConnected()) {
     Serial.println("running");
-    delay(100);
+    delay(500);
 
     mymouse.self_main();
   }

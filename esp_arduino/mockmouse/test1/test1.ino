@@ -12,10 +12,11 @@ void setup() {
 }
 
 void loop() {
-  if(mymouse.isConnected()) {
-    Serial.println("running");
-    delay(100);
-
+  if(mymouse.isConnected()) {//
     mymouse.self_main();
   }
+
+//    Serial.println("running");
+//    delay(100);
+//    mymouse.self_main();
 }
