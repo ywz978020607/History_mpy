@@ -5,6 +5,8 @@ void Mymouse::set_up(){
     //set the resolution to 12 bits (0-4096)
     analogReadResolution(adc_bit);
     // set bias
+   Serial.println((get_bias(point_x) + get_bias(point_y))/2, DEC);
+   Serial.println((get_bias(scroll_x) + get_bias(scroll_y))/2, DEC);
     adc_bias_point = (get_bias(point_x) + get_bias(point_y))/2;
     adc_bias_scroll = (get_bias(scroll_x) + get_bias(scroll_y))/2;
     // init gpio when not interrupt
@@ -33,25 +35,23 @@ void Mymouse::self_main(){
     }
 
     // 摇杆
-    temp_val = get_ADC(point_x, adc_bias_point);
-//    Serial.println("point_x");
-//    Serial.println(temp_val, DEC);
-//    Serial.println(change_speed(temp_val), DEC);
-    if(temp_val != 0)
-    move_point_right(change_speed(temp_val, true));
+    temp_val_1 = get_ADC(point_x, adc_bias_point);
+    temp_val_1 = change_speed(temp_val_1, true);
+    temp_val_2 = get_ADC(point_y, adc_bias_point);
+    temp_val_2 = change_speed(temp_val_2, true);
+    
+    if(temp_val_1 != 0 || temp_val_2 != 0){
+        move_point_right_down(temp_val_1, temp_val_2);
+      }
 
-    temp_val = get_ADC(point_y, adc_bias_point);
-    if(temp_val != 0)
-    move_point_down(change_speed(temp_val, true));
-
-    temp_val = get_ADC(scroll_x, adc_bias_scroll);
-    if(temp_val != 0)
-    move_scroll_right(change_speed(temp_val, true));
-
-    temp_val = get_ADC(scroll_y, adc_bias_scroll);
-//    Serial.println("scroll_y");
-//    Serial.println(temp_val, DEC);
-    if(temp_val != 0)
-    move_scroll_up(change_speed(temp_val));
-    // 
+    // 滚轮
+    temp_val_1 = get_ADC(scroll_x, adc_bias_scroll);
+    temp_val_1 = change_speed(temp_val_1, true);
+    temp_val_2 = get_ADC(scroll_y, adc_bias_scroll);
+    temp_val_2 = change_speed(temp_val_2);
+    if(temp_val_1 != 0 || temp_val_2 != 0){
+//      move_scroll_right(temp_val_1);
+//      move_scroll_up(temp_val_2);
+        move_scroll_up_right(temp_val_2, temp_val_1);
+    }
 }

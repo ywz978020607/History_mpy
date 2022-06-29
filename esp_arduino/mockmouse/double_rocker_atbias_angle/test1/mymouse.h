@@ -26,7 +26,8 @@ class Mymouse {
         avg_val += analogRead(pin_val);
         delay(50);
       }
-      return (1<<(adc_bit - 1) - avg_val/avg_num);
+      avg_val = avg_val/avg_num;
+      return ((1<<(adc_bit - 1)) - avg_val);
     }
     int get_ADC(int pin_val, int temp_add_bias = 0){
       return min(analogRead(pin_val) + temp_add_bias, 1<< adc_bit);
@@ -37,24 +38,36 @@ class Mymouse {
       return oppo?(rank_num - val):(val - rank_num);
     }
 
-    void move_point_down(int val){
-      if(val == 0){
-        return;
+//    void move_point_down(int val){
+//      if(val == 0){
+//        return;
+//      }
+//      for(unsigned char ii=0;ii<15;ii++){
+//        bleMouse.move(0,val*2);  //数值可改变速度
+//        delay(1); // 修改delay同样可以改变速度 - 作为效果调整使用
+//      }
+//    }
+//    void move_point_right(int val){
+//      if(val == 0){
+//        return;
+//      }
+//      for(unsigned char ii=0;ii<15;ii++){
+//        bleMouse.move(val*2, 0); //数值可改变速度
+//        delay(1); // 修改delay同样可以改变速度 - 作为效果调整使用
+//      }
+//    }
+
+    void move_point_right_down(int val1, int val2){
+        if(val1 == 0 && val2 == 0){
+          return;
+        }
+        for(unsigned char ii=0;ii<10;ii++){
+          bleMouse.move(val1*2, val2*2); //数值可改变速度
+          delay(10); // 修改delay同样可以改变速度 - 作为效果调整使用
+        }
       }
-      for(unsigned char ii=0;ii<15;ii++){
-        bleMouse.move(0,val*2);  //数值可改变速度
-        delay(1); // 修改delay同样可以改变速度 - 作为效果调整使用
-      }
-    }
-    void move_point_right(int val){
-      if(val == 0){
-        return;
-      }
-      for(unsigned char ii=0;ii<15;ii++){
-        bleMouse.move(val*2, 0); //数值可改变速度
-        delay(1); // 修改delay同样可以改变速度 - 作为效果调整使用
-      }
-    }
+
+    // scroll
     void move_scroll_up(int val){
       if(val == 0){
         return;
@@ -74,6 +87,17 @@ class Mymouse {
       }
     }
 
+    void move_scroll_up_right(int val1, int val2){
+        if(val1 == 0 && val2 == 0){
+            return;
+          }
+        for(unsigned char ii=0;ii<2;ii++){
+          bleMouse.move(0,0, val1, val2); //数值可改变速度
+          delay(50); // 修改delay同样可以改变速度 - 作为效果调整使用
+        }
+      }
+
+    //
     void press_key(uint8_t mode){
       // 支持 MOUSE_LEFT MOUSE_RIGHT MOUSE_MIDDLE MOUSE_BACK MOUSE_FORWARD 以及 MOUSE_LEFT | MOUSE_RIGHT 可多元复合操作
       bleMouse.click(mode);
@@ -96,7 +120,8 @@ class Mymouse {
     BleMouse bleMouse;
     //BleMouse bleMouse;
 
-    int temp_val = 0;
+    int temp_val_1 = 0;
+    int temp_val_2 = 0;
 //    int shift_threshold = 100; //防漂移阈值
     int adc_bit = 12;
     int rank_num = 4; //4挡 [0,8] 9个值 -- 由于默认向下取整，故加上2^(adc_bit-rank_num-1); // 2^(adc_bit - rank_num)为1 故加上一半的bias用来取整
