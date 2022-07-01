@@ -109,8 +109,8 @@ class Mymouse {
     // Button left_key = Button(22);
     // Button right_key = Button(23);
     // 轮询代替中断
-    int left_key = 22;
-    int right_key = 23;
+    int left_key = 25;
+    int right_key = 26;
 
     int point_x = 32;
     int point_y = 33;
