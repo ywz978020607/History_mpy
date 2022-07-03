@@ -113,7 +113,6 @@ class Mymouse {
     int rocker_y = 34;
 
     int left_key = 22;
-    int mode_key = 25; //switch to scroll
 
     BleMouse bleMouse;
 
@@ -122,6 +121,8 @@ class Mymouse {
     int adc_bit = 12;
     int rank_num = 4; //4挡 [0,8] 9个值 -- 由于默认向下取整，故加上2^(adc_bit-rank_num-1); // 2^(adc_bit - rank_num)为1 故加上一半的bias用来取整
     int adc_bias_rocker = 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
+    bool mode = false; // true: scroll
+
 };
 
 #endif

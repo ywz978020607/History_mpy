@@ -10,7 +10,6 @@ void Mymouse::set_up(){
     // init gpio when not interrupt
     pinMode(left_key, INPUT_PULLUP); // INPUT
     pinMode(right_key,INPUT_PULLUP);
-    pinMode(mode_key, INPUT_PULLUP);
 
     // Serial.printf("mymouse init\n");
     // init ble
@@ -24,16 +23,32 @@ void Mymouse::self_main(){
     // }
     // KEY非中断
     if(digitalRead(left_key) == LOW){
+        delay(150); // 消抖
         press_key(MOUSE_LEFT);
+        //消抖
+        while(digitalRead(right_key) == LOW);
+        delay(150);
     }
     if(digitalRead(right_key) == LOW){
-        press_key(MOUSE_RIGHT);
+        // 摇杆键多功能： 模式切换&普通右键
+        delay(150); // 消抖
+        
+        delay(400);
+        if(digitalRead(right_key) == LOW){
+            mode = !mode;    
+        }
+        else{
+            press_key(MOUSE_RIGHT);
+        }
+        
+        while(digitalRead(right_key) == LOW);
+        delay(150);
     }
 
     // 摇杆 or 滚轮
     temp_val_1 = get_ADC(rocker_x, adc_bias_rocker);
     temp_val_2 = get_ADC(rocker_y, adc_bias_rocker);
-    if(digitalRead(right_key) == LOW){
+    if(mode){
         // 滚轮
         temp_val_1 = change_speed(temp_val_1, true);
         temp_val_2 = change_speed(temp_val_2);
