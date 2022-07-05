@@ -20,11 +20,11 @@ ret2 = c2.readAll()
 u.read()
 ##################################
 # 重置引脚
-reset_pin = Pin(23, Pin.OUT)
+reset_pin = Pin(23, Pin.IN, Pin.PULL_UP)
 if(reset_pin.value() == 0):
     ret2['cnt'] = 0
     c2.writeConfig(ret2)
-    machine.deepsleep(10000)
+    machine.deepsleep(5000)
 
 if 'flag' not in ret2:
     ret2['flag'] = 0
