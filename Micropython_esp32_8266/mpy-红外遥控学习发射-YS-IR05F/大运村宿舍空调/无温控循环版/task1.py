@@ -5,6 +5,8 @@ import time
 import machine
 from config import *
 
+
+
 led = Pin(2,Pin.OUT)
 led.on()
 time.sleep(1)
@@ -17,6 +19,13 @@ c2=config('status.ini')
 ret2 = c2.readAll()
 u.read()
 ##################################
+# 重置引脚
+reset_pin = Pin(23, Pin.OUT)
+if(reset_pin.value() == 0):
+    ret2['cnt'] = 0
+    c2.writeConfig(ret2)
+    machine.deepsleep(10000)
+
 if 'flag' not in ret2:
     ret2['flag'] = 0
 print(ret2['flag'])
