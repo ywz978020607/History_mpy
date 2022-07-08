@@ -108,9 +108,9 @@ class Mymouse {
     // TODO 中断
     // Button right_key = Button(23);
     // 轮询代替中断 34-39只能输入且不能上下拉
-    int right_key = 34; //摇杆自带
-    int rocker_x = 35;
-    int rocker_y = 33;
+    int right_key = 33; //摇杆自带
+    int rocker_x = 34;
+    int rocker_y = 35;
 
     int left_key = 23;
 
