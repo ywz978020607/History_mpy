@@ -26,6 +26,8 @@ reset_pin = Pin(23, Pin.IN, Pin.PULL_UP)
 if(reset_pin.value() == 0):
     ret2['flag'] = '0'
     c2.writeConfig(ret2)
+    led.on()
+    time.sleep(1)
     led.off()
     machine.deepsleep(5000)
 
