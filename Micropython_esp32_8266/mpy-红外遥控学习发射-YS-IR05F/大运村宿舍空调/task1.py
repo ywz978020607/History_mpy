@@ -21,8 +21,14 @@ u.read()
 high_temp = 26
 low_temp = 24
 
-change = Pin(23,Pin.IN) #0 auto
-# if change.value()==1:
+# 重置引脚
+reset_pin = Pin(23, Pin.IN, Pin.PULL_UP)
+if(reset_pin.value() == 0):
+    ret2['flag'] = '0'
+    c2.writeConfig(ret2)
+    led.off()
+    machine.deepsleep(5000)
+
 ##################################
 mydht = dht.DHT11(Pin(5))
 mydht.measure()
@@ -37,20 +43,16 @@ def task_main():
     mydht.measure()
     temp = mydht.temperature()
     if temp>=high_temp:
-        if flag=='0' or change.value()==1:
+        if flag=='0':
             #use
-            u.write(ret['open'])
-            u.write(ret['open'])
             u.write(ret['open'])
             flag = '1'
             ret2['flag'] = '1'
             c2.writeConfig(ret2)
             print(u.read())
     if temp<=low_temp:
-        if flag=='1' or change.value()==1:
+        if flag=='1':
             #use
-            u.write(ret['open'])
-            u.write(ret['open'])
             u.write(ret['open'])
             flag = '0'
             ret2['flag'] = '0'
