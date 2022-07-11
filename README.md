@@ -1,3 +1,5 @@
+# 主仓库在History下，为了解耦降仓库体积，硬件端文件单独成仓库，支持请到History主仓库提Star～
+
 # 单片机系列之mpy与arduino选择  
 对于stm32来说，arduino不是很稳，很多库残缺，建议直接买mpy适配的型号，或换成avr等单片机用arduino开发  
 而对于esp系列来说，分为两种
