@@ -22,7 +22,7 @@ class TempControl():
         self.c2=config('status.ini')
         self.ret2 = self.c2.readAll()
         self.mydht = dht.DHT11(Pin(5))
-        self.high_temp, self.low_temp = 26, 24 #触发温度
+        self.high_temp, self.low_temp = 26, 23 #触发温度
 
         self.check_exec_now()
         # 使用重启代替定时器防止进程死掉
