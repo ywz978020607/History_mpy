@@ -2,7 +2,6 @@ import dht
 from machine import *
 from machine import UART
 import time
-import machine
 from config import *
 import machine,ssd1306
 
@@ -26,7 +25,9 @@ class TempControl():
         self.high_temp, self.low_temp = 26, 24 #触发温度
 
         self.check_exec_now()
-    
+        # 使用重启代替定时器防止进程死掉
+        self.cnt_count()
+
     # exec_now - 当手动接地时立即执行
     def check_exec_now(self):
         reset_pin = Pin(18, Pin.IN, Pin.PULL_UP)
@@ -34,7 +35,22 @@ class TempControl():
             self.save_status('exec_now', True)
             self.show_oled(self.ret2)
             time.sleep(1)
-        
+
+    def cnt_check(self):
+        if self.ret2.get('cnt', 0) > 0:
+            return False
+        else:
+            self.cnt_set()
+            return True
+
+    def cnt_set(self):
+        # task and set cnt
+        self.save_status('cnt', 60) # 10min
+
+    def cnt_count(self):
+        if self.ret2.get('cnt', 0) > 0:
+            self.save_status('cnt', self.ret2.get('cnt', 0) - 1)
+
     def save_status(self, key, val):
         self.ret2[key] = val
         self.c2.writeConfig(self.ret2)
@@ -47,6 +63,8 @@ class TempControl():
         time.sleep(1)
         self.led.off()
         self.save_status('flag', next_status)
+        # reset timer
+        self.cnt_set()
 
     def show_oled(self, temp_dict):
         self.oled.fill(0)
@@ -62,21 +80,23 @@ class TempControl():
         last_temp = self.ret2.get('last_temp', 0)
         exec_now = self.ret2.get('exec_now', False)
         ###
-        if temp >= self.high_temp and (last_temp < temp or exec_now):
+        if temp >= self.high_temp and (last_temp < temp or exec_now or self.cnt_check()):
             # open
             self.send_signal(next_status = True)
-        
-        if temp <= self.low_temp and (last_temp > temp or exec_now):
+            
+        if temp <= self.low_temp and (last_temp > temp or exec_now or self.cnt_check()):
             # close
             self.send_signal(next_status = False)
-        
+        ###
         self.save_status('last_temp', temp)
         self.save_status('exec_now', False)
         print(self.ret2)
         self.show_oled(self.ret2)
         time.sleep(2)
 
-## main
+
+
+## ---------- main -------------
 try:
     tempControl = TempControl()
     try:
