@@ -43,9 +43,9 @@ class TempControl():
             self.cnt_set()
             return True
 
-    def cnt_set(self):
+    def cnt_set(self, reset_cnt = 60):
         # task and set cnt
-        self.save_status('cnt', 60) # 10min
+        self.save_status('cnt', reset_cnt)
 
     def cnt_count(self):
         if self.ret2.get('cnt', 0) > 0:
@@ -55,7 +55,7 @@ class TempControl():
         self.ret2[key] = val
         self.c2.writeConfig(self.ret2)
     # send
-    def send_signal(self, next_status = False):
+    def send_signal(self, next_status = False, reset_cnt = 60):
         self.u.write(self.ret['open']) #open=close
         self.u.write(self.ret['open'])
         self.u.write(self.ret['open'])
@@ -64,7 +64,7 @@ class TempControl():
         self.led.off()
         self.save_status('flag', next_status)
         # reset timer
-        self.cnt_set()
+        self.cnt_set(reset_cnt)
 
     def show_oled(self, temp_dict):
         self.oled.fill(0)
@@ -82,11 +82,11 @@ class TempControl():
         ###
         if temp >= self.high_temp and (last_temp < temp or exec_now or self.cnt_check()):
             # open
-            self.send_signal(next_status = True)
+            self.send_signal(next_status = True, reset_cnt=60)
             
         if temp <= self.low_temp and (last_temp > temp or exec_now or self.cnt_check()):
-            # close
-            self.send_signal(next_status = False)
+            # close 自然升温慢，需要多给时间回复到最低以上
+            self.send_signal(next_status = False, reset_cnt=180)
         ###
         self.save_status('last_temp', temp)
         self.save_status('exec_now', False)
