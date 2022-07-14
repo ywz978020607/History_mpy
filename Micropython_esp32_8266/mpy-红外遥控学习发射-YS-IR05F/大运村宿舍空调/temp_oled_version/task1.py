@@ -23,8 +23,8 @@ class TempControl():
         self.ret2 = self.c2.readAll()
         # self.mydht = dht.DHT11(Pin(5))
         self.sensor = lm75a.LM75A(I2C(scl=Pin(25), sda=Pin(26)))
-        self.high_temp, self.low_temp = 26, 23 #触发温度
-        self.delta_temp = 0.5
+        self.high_temp, self.low_temp = 26, 24 #触发温度
+        self.delta_temp = 0.3
 
         self.check_exec_now()
         # 使用重启代替定时器防止进程死掉
