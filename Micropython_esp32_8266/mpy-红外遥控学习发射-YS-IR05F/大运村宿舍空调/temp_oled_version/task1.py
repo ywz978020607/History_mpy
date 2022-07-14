@@ -1,10 +1,10 @@
-import dht
+# import dht
 from machine import *
 from machine import UART
 import time
 from config import *
 import machine,ssd1306
-
+import lm75a
 
 class TempControl():
     # init
@@ -21,8 +21,10 @@ class TempControl():
         self.ret = self.c.readAll()
         self.c2=config('status.ini')
         self.ret2 = self.c2.readAll()
-        self.mydht = dht.DHT11(Pin(5))
+        # self.mydht = dht.DHT11(Pin(5))
+        self.sensor = lm75a.LM75A(I2C(scl=Pin(25), sda=Pin(26)))
         self.high_temp, self.low_temp = 26, 23 #触发温度
+        self.delta_temp = 0.3
 
         self.check_exec_now()
         # 使用重启代替定时器防止进程死掉
@@ -73,8 +75,9 @@ class TempControl():
         self.oled.show()
 
     def task_main(self):
-        self.mydht.measure()
-        temp = self.mydht.temperature()
+        # self.mydht.measure()
+        # temp = self.mydht.temperature()
+        temp = self.sensor.temp()
         self.save_status('high_temp', self.high_temp)
         self.save_status('low_temp', self.low_temp)
         last_temp = self.ret2.get('last_temp', 0)
@@ -88,7 +91,8 @@ class TempControl():
             # close 自然升温慢，需要多给时间回复到最低以上
             self.send_signal(next_status = False, reset_cnt=180)
         ###
-        self.save_status('last_temp', temp)
+        if abs(temp - last_temp) > self.delta_temp:
+            self.save_status('last_temp', temp)
         self.save_status('exec_now', False)
         print(self.ret2)
         self.show_oled(self.ret2)
