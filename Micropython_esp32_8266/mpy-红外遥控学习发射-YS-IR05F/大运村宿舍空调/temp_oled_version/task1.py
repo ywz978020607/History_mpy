@@ -9,10 +9,14 @@ import lm75a
 class TempControl():
     # init
     def __init__(self) -> None:
-        self.oled=ssd1306.SSD1306_I2C(128,64,machine.I2C(scl=machine.Pin(22),sda=machine.Pin(23)))
-        self.oled.fill(0)
-        self.oled.text("starting...",0,54) #[col, row]
-        self.oled.show()
+        self.oled = None
+        try:
+            self.oled = ssd1306.SSD1306_I2C(128,64,machine.I2C(scl=machine.Pin(22),sda=machine.Pin(23)))
+            self.oled.fill(0)
+            self.oled.text("starting...",0,54) #[col, row]
+            self.oled.show()
+        except:
+            print("no oled")
         self.led = Pin(2,Pin.OUT)
         self.led.off()
         self.u=UART(2,9600)
@@ -23,12 +27,19 @@ class TempControl():
         self.ret2 = self.c2.readAll()
         # self.mydht = dht.DHT11(Pin(5))
         self.sensor = lm75a.LM75A(I2C(scl=Pin(25), sda=Pin(26)))
-        self.high_temp, self.low_temp = 26, 24 #触发温度
-        self.delta_temp = 0.3
+        self.high_temp, self.low_temp = 27.4, 24.9 #触发温度
+        self.delta_temp = 0.2
 
         self.check_exec_now()
         # 使用重启代替定时器防止进程死掉
         self.cnt_count()
+    # get avg temp
+    def _get_temp_avg(self):
+        temp_list = []
+        for ii in range(10):
+            temp_list.append(self.sensor.temp())
+            time.sleep_ms(100)
+        return sum(temp_list)/len(temp_list) if temp_list else 0
 
     # exec_now - 当手动接地时立即执行
     def check_exec_now(self):
@@ -69,15 +80,17 @@ class TempControl():
         self.cnt_set(reset_cnt)
 
     def show_oled(self, temp_dict):
-        self.oled.fill(0)
-        for idx, key in enumerate(temp_dict):
-            self.oled.text("{}:{}".format(key, temp_dict[key]),0,idx*10) #[col, row]
-        self.oled.show()
+        if not self.oled:
+            self.oled.fill(0)
+            for idx, key in enumerate(temp_dict):
+                self.oled.text("{}:{}".format(key, temp_dict[key]),0,idx*10) #[col, row]
+            self.oled.show()
 
     def task_main(self):
         # self.mydht.measure()
         # temp = self.mydht.temperature()
-        temp = self.sensor.temp()
+        # temp = self.sensor.temp()
+        temp = self._get_temp_avg()
         self.save_status('high_temp', self.high_temp)
         self.save_status('low_temp', self.low_temp)
         last_temp = self.ret2.get('last_temp', 0)
