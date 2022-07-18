@@ -27,8 +27,8 @@ class TempControl():
         self.ret2 = self.c2.readAll()
         # self.mydht = dht.DHT11(Pin(5))
         self.sensor = lm75a.LM75A(I2C(scl=Pin(25), sda=Pin(26)))
-        self.high_temp, self.low_temp = 27.4, 24.9 #触发温度
-        self.delta_temp = 0.2
+        self.high_temp, self.low_temp = 27.8, 25.2 #触发温度
+        self.delta_temp = 0.1
 
         self.check_exec_now()
         # 使用重启代替定时器防止进程死掉
@@ -80,7 +80,7 @@ class TempControl():
         self.cnt_set(reset_cnt)
 
     def show_oled(self, temp_dict):
-        if not self.oled:
+        if self.oled:
             self.oled.fill(0)
             for idx, key in enumerate(temp_dict):
                 self.oled.text("{}:{}".format(key, temp_dict[key]),0,idx*10) #[col, row]
@@ -99,10 +99,11 @@ class TempControl():
         if temp >= self.high_temp and (last_temp < temp or exec_now or self.cnt_check()):
             # open
             self.send_signal(next_status = True, reset_cnt=60)
-            
+            self.save_status('last_temp', temp)
         if temp <= self.low_temp and (last_temp > temp or exec_now or self.cnt_check()):
             # close 自然升温慢，需要多给时间回复到最低以上
             self.send_signal(next_status = False, reset_cnt=180)
+            self.save_status('last_temp', temp)
         ###
         if abs(temp - last_temp) > self.delta_temp:
             self.save_status('last_temp', temp)
