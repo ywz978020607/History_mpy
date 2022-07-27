@@ -8,8 +8,8 @@ void Mymouse::set_up(){
     Serial.println((get_bias(rocker_x) + get_bias(rocker_y))/2, DEC);
     adc_bias_rocker = (get_bias(rocker_x) + get_bias(rocker_y))/2;
     // init gpio when not interrupt
-    pinMode(left_key, INPUT_PULLUP); // INPUT
-    pinMode(right_key,INPUT_PULLUP); // 34-39 can only be input and can not PULL UP/DOWN.
+    pinMode(s_key_1, INPUT_PULLUP); // INPUT
+    pinMode(rocker_key,INPUT_PULLDOWN); // 34-39 can only be input and can not PULL UP/DOWN.
 
     // Serial.printf("mymouse init\n");
     // init ble
@@ -18,24 +18,24 @@ void Mymouse::set_up(){
 
 void Mymouse::self_main(){
     // KEY 中断类
-    // if(left_key.checkPressed()){
+    // if(s_key_1.checkPressed()){
     // press_key(MOUSE_LEFT);
     // }
     // KEY非中断
-    if(digitalRead(left_key) == LOW){
+    if(digitalRead(s_key_1) == LOW){
         delay(150); // 消抖
 //        Serial.println("push left button.\n");
         press_key(MOUSE_LEFT);
         //消抖
-        while(digitalRead(left_key) == LOW);
+        while(digitalRead(s_key_1) == LOW);
         delay(150);
     }
-    if(digitalRead(right_key) == LOW){ // 注意要硬件/软件上拉
+    if(digitalRead(rocker_key) == HIGH){ // 注意要硬件/软件上拉
         // 摇杆键多功能： 模式切换&普通右键
         delay(150); // 消抖
         
         delay(400);
-        if(digitalRead(right_key) == HIGH){
+        if(digitalRead(rocker_key) == LOW){
             mode = !mode;    
 //            Serial.println("change mode");
 //            Serial.println(mode?1:0, DEC);
@@ -44,7 +44,7 @@ void Mymouse::self_main(){
             press_key(MOUSE_RIGHT);
 //            Serial.println("right");
         }
-        while(digitalRead(right_key) == LOW);
+        while(digitalRead(rocker_key) == HIGH);
         delay(150);
     }
 
