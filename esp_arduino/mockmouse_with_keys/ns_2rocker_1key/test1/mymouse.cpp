@@ -13,6 +13,7 @@ void Mymouse::set_up(){
 
     // Serial.printf("mymouse init\n");
     // init ble
+    bleKeyboard.begin();
     bleMouse.begin();
 }
 

@@ -4,16 +4,19 @@
 #define _MYMOUSE_H_
  
 #include <Arduino.h>
-#include <BleConnectionStatus.h>
-#include <BleMouse.h>
-// #include "Button.h"
+//#include <BleConnectionStatus.h>
+//#include <BleCombo.h>
+#include "BleComboKeyboard.h"
+#include "BleComboMouse.h"
+// #include <BleMouse.h>
+
 
 class Mymouse {
   public:
     // Mymouse();
     // ~Mymouse();
     bool isConnected(){
-        return bleMouse.isConnected();
+        return bleKeyboard.isConnected();
     }
     void set_up();
     void self_main(); // 主函数
@@ -48,7 +51,6 @@ class Mymouse {
         }
       }
 
-    // scroll
     void move_scroll_up_right(int val1, int val2){
         if(val1 == 0 && val2 == 0){
             return;
@@ -69,8 +71,8 @@ class Mymouse {
 
     int s_key_1 = 26;
     
-
-    BleMouse bleMouse;
+    BleComboKeyboard  bleKeyboard;
+    BleComboMouse bleMouse = BleComboMouse(&bleKeyboard);
 
     int temp_val_1 = 0;
     int temp_val_2 = 0;
