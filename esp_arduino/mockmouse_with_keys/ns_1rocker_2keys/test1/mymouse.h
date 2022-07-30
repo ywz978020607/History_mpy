@@ -1,3 +1,5 @@
+
+
 #ifndef _MYMOUSE_H_
 #define _MYMOUSE_H_
  
@@ -19,6 +21,7 @@ class Mymouse {
     void set_up();
     void self_main(); // 主函数
 
+    // 
     int get_bias(int pin_val){
       int avg_val = 0;
       int avg_num = 5;
@@ -59,16 +62,14 @@ class Mymouse {
       }
 
   public:
+    // TODO 中断
+    // Button rocker_key = Button(23);
     // 轮询代替中断 34-39只能输入且不能上下拉
-    int rocker_key = 18; //摇杆自带
+    int rocker_key = 33; //摇杆自带
     int rocker_x = 34;
     int rocker_y = 35;
 
-    int pointer_key = 26; //摇杆自带
-    int pointer_x = 32;
-    int pointer_y = 33;
-
-    int s_key_1 = 23;
+    int s_key_1 = 26;
     
     BleComboKeyboard  bleKeyboard;
     BleComboMouse bleMouse = BleComboMouse(&bleKeyboard);
@@ -78,8 +79,8 @@ class Mymouse {
     int adc_bit = 12;
     int rank_num = 4; //4挡 [0,8] 9个值 -- 由于默认向下取整，故加上2^(adc_bit-rank_num-1); // 2^(adc_bit - rank_num)为1 故加上一半的bias用来取整
     int adc_bias_rocker = 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
-    int adc_bias_pointer= 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
-    bool mode = false; // true: scroll false: direction
+    bool mode = false; // true: scroll
+
 };
 
 #endif
