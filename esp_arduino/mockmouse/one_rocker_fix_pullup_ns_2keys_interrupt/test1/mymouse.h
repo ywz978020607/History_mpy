@@ -84,23 +84,18 @@ class Mymouse {
 
     // interrupt
     void ARDUINO_ISR_ATTR isr(){
-      detachInterrupt(digitalPinToInterrupt(s_key_1));
-      // noInterrupts();
-      // if (millis() - triggertime > 50 && digitalRead(s_key_1) == LOW)//如果中断内时间减去上次进入中断时间大于消抖时间
-      // {
-      //   triggertime =millis();
-      //   Serial.printf("pressed\n");
-      // }
-      delay(50);
-      if (digitalRead(s_key_1) == LOW)
-      {
-        triggertime =millis();
+      if(!trigger_status){
+        trigger_status = true;
+        if (millis() - triggertime > 50 && digitalRead(s_key_1) == LOW)//如果中断内时间减去上次进入中断时间大于消抖时间
+        {
+          triggertime =millis();
+          Serial.printf("pressed\n");
+        }
+        trigger_status = false;
       }
-
-      attachInterrupt(digitalPinToInterrupt(s_key_1), std::bind(&Mymouse::isr,this), FALLING);
-      // interrupts();
     }
-    volatile uint32_t triggertime;
+    volatile uint32_t triggertime = 0;
+    volatile bool trigger_status = false;
 
 };
 
