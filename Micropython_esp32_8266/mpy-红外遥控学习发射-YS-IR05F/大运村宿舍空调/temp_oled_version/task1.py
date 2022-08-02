@@ -103,7 +103,7 @@ class TempControl():
             self.send_signal(next_status = True, reset_cnt=60)
         if temp <= self.low_temp and (last_temp > temp or exec_now or self.cnt_check()):
             # close 自然升温慢，需要多给时间回复到最低以上
-            self.send_signal(next_status = False, reset_cnt=180)
+            self.send_signal(next_status = False, reset_cnt=100)
         ###
         self.save_status('last_temp', temp)
         self.save_status('exec_now', False)
@@ -123,5 +123,5 @@ try:
 except Exception as e:
     print(e)
 
-machine.deepsleep(10000) # 休眠ms
+machine.deepsleep(60000) # 休眠ms
 
