@@ -58,7 +58,7 @@ class Mymouse {
           }
         for(unsigned char ii=0;ii<2;ii++){
           bleMouse.move(0,0, val1, val2); //数值可改变速度
-          delay(100); // 修改delay同样可以改变速度 - 作为效果调整使用
+          delay(50); // 修改delay同样可以改变速度 - 作为效果调整使用
         }
       }
 
