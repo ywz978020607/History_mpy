@@ -7,6 +7,7 @@
 //#include <BleConnectionStatus.h>
 //#include <BleCombo.h>
 #include "BleComboKeyboard.h"
+//#include <BleKeyboard.h>
 #include "BleComboMouse.h"
 // #include <BleMouse.h>
 
@@ -72,6 +73,7 @@ class Mymouse {
     int s_key_1 = 26;
     
     BleComboKeyboard  bleKeyboard;
+//    BleKeyboard bleKeyboard;
     BleComboMouse bleMouse = BleComboMouse(&bleKeyboard);
 
     int temp_val_1 = 0;
