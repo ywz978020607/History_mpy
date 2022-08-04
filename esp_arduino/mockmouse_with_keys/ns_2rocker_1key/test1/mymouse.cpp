@@ -1,5 +1,9 @@
 #include "mymouse.h"
 
+#define direct_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), false)
+#define direct_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), false)
+
+
 void Mymouse::set_up(){
     // init adc
     //set the resolution to 12 bits (0-4096)
@@ -39,9 +43,9 @@ void Mymouse::self_main(){
     temp_val_1 = get_ADC(pointer_x, adc_bias_pointer);
     temp_val_2 = get_ADC(pointer_y, adc_bias_pointer);
     temp_val_1 = change_speed(temp_val_1);
-    temp_val_2 = change_speed(temp_val_2, true);
+    temp_val_2 = change_speed(temp_val_2);
     if(temp_val_1 != 0 || temp_val_2 != 0){
-        move_point_right_down(temp_val_2, temp_val_1);
+        move_point_right_down(temp_val_1, temp_val_2);
     }
 
     // rocker -- direction or scroll
@@ -59,38 +63,41 @@ void Mymouse::self_main(){
         delay(150);
     }
 
-    // 方向键 or 滚轮
+    // 方向键 or 滚轮 -- scroll rocker
     temp_val_1 = get_ADC(rocker_x, adc_bias_rocker);
     temp_val_2 = get_ADC(rocker_y, adc_bias_rocker);
+    temp_val_1 = change_speed(temp_val_1);
+    temp_val_2 = change_speed(temp_val_2);
     if(mode){
         // 滚轮
-        temp_val_1 = change_speed(temp_val_1, true);
-        temp_val_2 = change_speed(temp_val_2);
         if(temp_val_1 != 0 || temp_val_2 != 0){
-            move_scroll_up_right(temp_val_1, temp_val_2);
+            move_scroll_up_right(temp_val_2, temp_val_1);
         }
     }
     else{
         // 方向键
-        temp_val_1 = change_speed(temp_val_1);
-        temp_val_2 = change_speed(temp_val_2);
-        
-        if(temp_val_1 == rank_num){
+//        Serial.println(temp_val_1, DEC);
+        if(temp_val_2 >= rank_num-1){
             bleKeyboard.press(KEY_UP_ARROW);
-            while(temp_val_1 == rank_num);
+            while(direct_get_val_2 >= rank_num-1){};
+            bleKeyboard.releaseAll();
         }
-        else if(temp_val_1 == -rank_num){
+        else if(temp_val_2 <= -rank_num+1){
             bleKeyboard.press(KEY_DOWN_ARROW);
-            while(temp_val_1 == -rank_num);
+            while(direct_get_val_2 <= -rank_num+1);
+            bleKeyboard.releaseAll();
         }
 
-        else if(temp_val_2 == rank_num){
+        else if(temp_val_1 >= rank_num-1){
             bleKeyboard.press(KEY_LEFT_ARROW);
-            while(temp_val_2 == rank_num);
+            while(direct_get_val_1 >= rank_num-1);
+            bleKeyboard.releaseAll();
         }
-        else if(temp_val_2 == -rank_num){
+        else if(temp_val_1 <= -rank_num+1){
             bleKeyboard.press(KEY_RIGHT_ARROW);
-            while(temp_val_2 == -rank_num);
+            while(direct_get_val_1 <= -rank_num+1);
+            // bleKeyboard.release(KEY_RIGHT_ARROW);
+            bleKeyboard.releaseAll();
         }
     }
 }
