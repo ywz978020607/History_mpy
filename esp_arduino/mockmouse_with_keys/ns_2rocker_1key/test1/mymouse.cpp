@@ -36,7 +36,7 @@ void Mymouse::self_main(){
     if(digitalRead(pointer_key) == HIGH){
         delay(50); // 消抖
         bleMouse.press(MOUSE_LEFT);
-        while(digitalRead(s_key_1) == HIGH);
+        while(digitalRead(pointer_key) == HIGH);
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
