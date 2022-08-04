@@ -1,8 +1,16 @@
 #include "mymouse.h"
 
-#define direct_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), false)
-#define direct_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), false)
+// // 左指针，右方向
+// #define pointer_get_val_1 change_speed(get_ADC(pointer_x, adc_bias_pointer), false)
+// #define pointer_get_val_2 change_speed(get_ADC(pointer_y, adc_bias_pointer), false)
+// #define scroll_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), false)
+// #define scroll_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), false)
 
+// 左方向，右指针
+#define pointer_get_val_1 change_speed(get_ADC(pointer_x, adc_bias_pointer), true)
+#define pointer_get_val_2 change_speed(get_ADC(pointer_y, adc_bias_pointer), true)
+#define scroll_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), true)
+#define scroll_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), true)
 
 void Mymouse::set_up(){
     // init adc
@@ -31,7 +39,6 @@ void Mymouse::self_main(){
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
-
     // pointer
     if(digitalRead(pointer_key) == HIGH){
         delay(50); // 消抖
@@ -40,10 +47,10 @@ void Mymouse::self_main(){
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
-    temp_val_1 = get_ADC(pointer_x, adc_bias_pointer);
-    temp_val_2 = get_ADC(pointer_y, adc_bias_pointer);
-    temp_val_1 = change_speed(temp_val_1);
-    temp_val_2 = change_speed(temp_val_2);
+
+
+    temp_val_1 = pointer_get_val_1;
+    temp_val_2 = pointer_get_val_2;
     if(temp_val_1 != 0 || temp_val_2 != 0){
         move_point_right_down(temp_val_1, temp_val_2);
     }
@@ -64,10 +71,8 @@ void Mymouse::self_main(){
     }
 
     // 方向键 or 滚轮 -- scroll rocker
-    temp_val_1 = get_ADC(rocker_x, adc_bias_rocker);
-    temp_val_2 = get_ADC(rocker_y, adc_bias_rocker);
-    temp_val_1 = change_speed(temp_val_1);
-    temp_val_2 = change_speed(temp_val_2);
+    temp_val_1 = scroll_get_val_1;
+    temp_val_2 = scroll_get_val_2;
     if(mode){
         // 滚轮
         if(temp_val_1 != 0 || temp_val_2 != 0){
@@ -79,23 +84,23 @@ void Mymouse::self_main(){
 //        Serial.println(temp_val_1, DEC);
         if(temp_val_2 >= rank_num-1){
             bleKeyboard.press(KEY_UP_ARROW);
-            while(direct_get_val_2 >= rank_num-1){};
+            while(scroll_get_val_2 >= rank_num-1){};
             bleKeyboard.releaseAll();
         }
         else if(temp_val_2 <= -rank_num+1){
             bleKeyboard.press(KEY_DOWN_ARROW);
-            while(direct_get_val_2 <= -rank_num+1);
+            while(scroll_get_val_2 <= -rank_num+1);
             bleKeyboard.releaseAll();
         }
 
         else if(temp_val_1 >= rank_num-1){
             bleKeyboard.press(KEY_LEFT_ARROW);
-            while(direct_get_val_1 >= rank_num-1);
+            while(scroll_get_val_1 >= rank_num-1);
             bleKeyboard.releaseAll();
         }
         else if(temp_val_1 <= -rank_num+1){
             bleKeyboard.press(KEY_RIGHT_ARROW);
-            while(direct_get_val_1 <= -rank_num+1);
+            while(scroll_get_val_1 <= -rank_num+1);
             // bleKeyboard.release(KEY_RIGHT_ARROW);
             bleKeyboard.releaseAll();
         }
