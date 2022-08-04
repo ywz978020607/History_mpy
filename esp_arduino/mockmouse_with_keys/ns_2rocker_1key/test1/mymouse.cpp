@@ -16,6 +16,8 @@ void Mymouse::set_up(){
     // init adc
     //set the resolution to 12 bits (0-4096)
     analogReadResolution(adc_bit);
+    // battery ADC(ADC2)
+    Serial.println(analogRead(adc_battery), DEC);
     // set bias
     Serial.println((get_bias(rocker_x) + get_bias(rocker_y))/2, DEC);
     adc_bias_rocker = (get_bias(rocker_x) + get_bias(rocker_y))/2;

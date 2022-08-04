@@ -70,6 +70,8 @@ class Mymouse {
 
     int s_key_1 = 23;
     
+    int adc_battery = 27; // 采集ADC电压，由于ADC1用完了，只能用ADC2-安全范围12~14,25~27
+
     BleComboKeyboard  bleKeyboard;
     BleComboMouse bleMouse = BleComboMouse(&bleKeyboard);
 
