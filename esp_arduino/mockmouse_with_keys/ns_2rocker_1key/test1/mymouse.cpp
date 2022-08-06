@@ -36,8 +36,17 @@ void Mymouse::self_main(){
     // 独立Key
     if(digitalRead(s_key_1) == LOW){
         delay(50); // 消抖
+        // bleMouse.click(MOUSE_LEFT);
         bleMouse.press(MOUSE_LEFT);
-        while(digitalRead(s_key_1) == LOW);
+        while(digitalRead(s_key_1) == LOW){
+            // copy from below
+            temp_val_1 = pointer_get_val_1;
+            temp_val_2 = pointer_get_val_2;
+            if(temp_val_1 != 0 || temp_val_2 != 0){
+                move_point_right_down(temp_val_1, temp_val_2);
+            }
+            // copy done
+        };
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
