@@ -46,11 +46,44 @@ void Mymouse::self_main(){
                 move_point_right_down(temp_val_1, temp_val_2);
             }
             // copy done
+
+            // add for media control
+            temp_val_1 = scroll_get_val_1;
+            temp_val_2 = scroll_get_val_2;
+            if(temp_val_2 >= rank_num-1){
+                bleMouse.release(MOUSE_LEFT);
+                bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
+                while(scroll_get_val_2 >= rank_num-1){};
+            }
+            else if(temp_val_2 <= -rank_num+1){
+                bleMouse.release(MOUSE_LEFT);
+                bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
+                while(scroll_get_val_2 <= -rank_num+1);
+            }
+
+            else if(temp_val_1 >= rank_num-1){ //LEFT
+                bleMouse.release(MOUSE_LEFT);
+                bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+                while(scroll_get_val_1 >= rank_num-1);
+            }
+            else if(temp_val_1 <= -rank_num+1){ //right
+                bleMouse.release(MOUSE_LEFT);
+                bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
+                while(scroll_get_val_1 <= -rank_num+1);
+            }
+            // pause  KEY_MEDIA_PLAY_PAUSE
+            if(digitalRead(rocker_key) == HIGH){
+                bleMouse.release(MOUSE_LEFT);
+                delay(50); // 消抖
+                bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
+                while(digitalRead(rocker_key) == HIGH);
+                delay(50);
+            }
         };
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
-    // pointer
+    // pointer key
     if(digitalRead(pointer_key) == HIGH){
         delay(50); // 消抖
         bleMouse.press(MOUSE_LEFT);
@@ -59,14 +92,7 @@ void Mymouse::self_main(){
         delay(50);
     }
 
-
-    temp_val_1 = pointer_get_val_1;
-    temp_val_2 = pointer_get_val_2;
-    if(temp_val_1 != 0 || temp_val_2 != 0){
-        move_point_right_down(temp_val_1, temp_val_2);
-    }
-
-    // rocker -- direction or scroll
+    // rocker key
     if(digitalRead(rocker_key) == HIGH){ // 注意要硬件/软件上拉
         // 摇杆键多功能： 模式切换&普通右键
         delay(150); // 消抖
@@ -81,6 +107,14 @@ void Mymouse::self_main(){
         delay(150);
     }
 
+    // pointer ADC
+    temp_val_1 = pointer_get_val_1;
+    temp_val_2 = pointer_get_val_2;
+    if(temp_val_1 != 0 || temp_val_2 != 0){
+        move_point_right_down(temp_val_1, temp_val_2);
+    }
+    
+    // rocker ADC
     // 方向键 or 滚轮 -- scroll rocker
     temp_val_1 = scroll_get_val_1;
     temp_val_2 = scroll_get_val_2;
