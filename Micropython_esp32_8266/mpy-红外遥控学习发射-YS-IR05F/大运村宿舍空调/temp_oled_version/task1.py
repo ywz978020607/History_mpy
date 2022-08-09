@@ -105,7 +105,7 @@ class TempControl():
             if (last_temp > temp or exec_now or self.cnt_check()):
                 # close
                 self.send_signal(next_status = False, reset_cnt=60)
-            if self.ret2.get('cnt', 0) > 50: #注意Δ，保证正常空调降温时间够长
+            elif self.ret2.get('cnt', 0) > 50: #注意Δ，保证正常空调降温时间够长
                 self.cnt_set(self.ret2.get('cnt', 0) + 1)
         ###
         self.save_status('last_temp', temp)
