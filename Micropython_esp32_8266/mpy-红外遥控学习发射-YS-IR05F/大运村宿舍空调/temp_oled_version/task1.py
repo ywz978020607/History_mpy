@@ -101,9 +101,12 @@ class TempControl():
         if temp >= self.high_temp and (last_temp < temp or exec_now or self.cnt_check()):
             # open
             self.send_signal(next_status = True, reset_cnt=60)
-        if temp <= self.low_temp and (last_temp > temp or exec_now or self.cnt_check()):
-            # close 自然升温慢，需要多给时间回复到最低以上
-            self.send_signal(next_status = False, reset_cnt=100)
+        if temp <= self.low_temp:
+            if (last_temp > temp or exec_now or self.cnt_check()):
+                # close
+                self.send_signal(next_status = False, reset_cnt=60)
+            if self.ret2.get('cnt', 0) > 50: #注意Δ，保证正常空调降温时间够长
+                self.cnt_set(self.ret2.get('cnt', 0) + 1)
         ###
         self.save_status('last_temp', temp)
         self.save_status('exec_now', False)
