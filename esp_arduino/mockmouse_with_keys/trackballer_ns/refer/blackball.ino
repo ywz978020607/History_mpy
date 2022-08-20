@@ -1,4 +1,5 @@
 // https://github.com/LSChyi/blackberry-mini-trackball/blob/master/blackberry_mini_trackball/blackberry_mini_trackball.ino
+// https://www.youtube.com/watch?v=pNDsID4fOzs
 
 #include <Mouse.h>
 #define bounce_interval       30

@@ -1,5 +1,9 @@
 # 增加轨迹球模块
 
+// https://github.com/LSChyi/blackberry-mini-trackball/blob/master/blackberry_mini_trackball/blackberry_mini_trackball.ino
+// https://www.youtube.com/watch?v=pNDsID4fOzs
+
+
 
 
 ```cpp
