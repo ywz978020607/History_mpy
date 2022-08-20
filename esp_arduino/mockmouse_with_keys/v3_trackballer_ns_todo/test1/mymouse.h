@@ -1,6 +1,6 @@
 #ifndef _MYMOUSE_H_
 #define _MYMOUSE_H_
- 
+
 #include <Arduino.h>
 //#include <BleConnectionStatus.h>
 //#include <BleCombo.h>
@@ -8,6 +8,52 @@
 #include "BleComboMouse.h"
 // #include <BleMouse.h>
 
+// tracker
+#define bounce_interval       30
+#define base_move_pixels      5
+#define exponential_bound     15
+#define exponential_base      1.2
+
+
+class Direction {
+public:
+  Direction(int pin1, int pin2) {
+    this->pins[0] = pin1;
+    this->pins[1] = pin2;
+    pinMode(this->pins[0], INPUT);
+    pinMode(this->pins[1], INPUT);
+  };
+  int read_action() {
+    for(int i = 0; i < 2; ++i) {
+      this->current_actions[i] = digitalRead(this->pins[i]);
+      this->current_action_times[i] = millis();
+      if(this->current_actions[i] != this->last_actions[i]) {
+        this->last_actions[i] = this->current_actions[i];
+        exponential = (exponential_bound - (this->current_action_times[i] - this->last_action_times[i]));
+        exponential = (exponential > 0) ? exponential : 1;
+        move_multiply = exponential_base;
+        for(int i = 0; i < exponential; ++i) {
+          move_multiply *= exponential_base;
+        }
+        this->last_action_times[i] = this->current_action_times[i];
+        if(i == 0) {
+          return (-1) * base_move_pixels * move_multiply;
+        } else {
+          return base_move_pixels * move_multiply;
+        }
+      }
+    }
+    return 0;
+  };
+private:
+  int pins[2];
+  int current_actions[2];
+  int last_actions[2];
+  int  exponential;
+  double move_multiply;
+  unsigned long current_action_times[2];
+  unsigned long last_action_times[2];
+};
 
 class Mymouse {
   public:
@@ -82,6 +128,25 @@ class Mymouse {
     int adc_bias_rocker = 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     int adc_bias_pointer= 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     bool mode = true; // true: scroll false: direction
+
+
+    // tracker
+    int white_led_pin = 4;
+    int btn_pin               =5;
+    int right_pin             =16;
+    int left_pin              =17;
+    int down_pin              =18;
+    int up_pin                =19;
+    // button and debounce
+    int btn_state;
+    int btn_read_state;
+    unsigned long btn_current_action_time;
+    unsigned long btn_last_action_time;
+
+    // mouse move
+    int x_move, y_move;
+    Direction x_direction = Direction(left_pin, right_pin);
+    Direction y_direction = Direction(up_pin, down_pin);
 };
 
 #endif

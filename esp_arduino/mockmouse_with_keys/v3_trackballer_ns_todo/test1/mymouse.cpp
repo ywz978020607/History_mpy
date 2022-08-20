@@ -27,12 +27,18 @@ void Mymouse::set_up(){
     pinMode(rocker_key,INPUT_PULLDOWN); // 34-39 can only be input and can not PULL UP/DOWN.
     pinMode(pointer_key,INPUT_PULLDOWN); // 34-39 can only be input and can not PULL UP/DOWN.
 
+    // init tracker
+    pinMode(white_led_pin, OUTPUT);
+    pinMode(btn_pin, INPUT);
+    digitalWrite(white_led_pin, HIGH);
+
     // init ble
     bleKeyboard.begin();
     bleMouse.begin();
 }
 
 void Mymouse::self_main(){
+
     // 独立Key
     if(digitalRead(s_key_1) == LOW){
         delay(50); // 消抖
@@ -150,4 +156,31 @@ void Mymouse::self_main(){
             bleKeyboard.releaseAll();
         }
     }
+
+    // -----------------
+
+    // tracker Key
+    btn_read_state = digitalRead(btn_pin);
+    if(btn_read_state != btn_state) {
+        btn_current_action_time = millis();
+        if(btn_current_action_time - btn_last_action_time > bounce_interval) {
+        btn_state = btn_read_state;
+        btn_last_action_time = btn_current_action_time;
+        if(btn_state == HIGH) {
+            digitalWrite(white_led_pin, HIGH);
+            bleMouse.release(MOUSE_LEFT);
+        } else {
+            digitalWrite(white_led_pin, LOW);
+            bleMouse.press(MOUSE_LEFT);
+        }
+        }
+    }
+
+    // tracker Move
+    x_move = x_direction.read_action();
+    y_move = y_direction.read_action();
+    if(x_move != 0 || y_move != 0) {
+        move_point_right_down(x_move, y_move);
+    }
+
 }
