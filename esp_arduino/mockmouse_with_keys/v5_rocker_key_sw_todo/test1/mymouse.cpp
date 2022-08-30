@@ -23,9 +23,13 @@ void Mymouse::set_up(){
     adc_bias_rocker = (get_bias(rocker_x) + get_bias(rocker_y))/2;
     adc_bias_pointer = (get_bias(pointer_x) + get_bias(pointer_y))/2;
     // init gpio when not interrupt
-    pinMode(s_key_1, INPUT_PULLUP); // INPUT
-    pinMode(rocker_key,INPUT_PULLDOWN); // 34-39 can only be input and can not PULL UP/DOWN.
-    pinMode(pointer_key,INPUT_PULLDOWN); // 34-39 can only be input and can not PULL UP/DOWN.
+    for(int key_num: pullup_input){
+        pinMode(key_num, INPUT_PULLUP);
+    }
+    for(int key_num: pulldown_input){
+        pinMode(key_num, INPUT_PULLDOWN);
+    }
+    //pinMode(signal_out, OUTPUT);
 
     // init ble
     bleKeyboard.begin();

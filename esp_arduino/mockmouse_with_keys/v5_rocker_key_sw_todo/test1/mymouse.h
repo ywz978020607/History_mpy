@@ -64,7 +64,7 @@ class Mymouse {
     int dir_up = 25;
     int dir_down = 4;
     int dir_left = 22;
-    int dir_right= 322;
+    int dir_right= 32;
     
     int key_left_up   = 17;
     int key_left_down = 26;
@@ -81,6 +81,12 @@ class Mymouse {
     
     int adc_battery = 33; // 采集ADC电压，由于ADC1用完了，只能用ADC2-安全范围12~14,25~27
     int signal_out = 5;
+    
+    int pullup_input[] = {dir_key, dir_up, dir_down, dir_left,\
+        dir_right, key_left_up, key_left_down, key_right_up, key_right_down,\
+        s_key_1, s_key_2};
+    int pulldown_input[] = {pointer_key};
+
 
     //
     BleComboKeyboard  bleKeyboard;
