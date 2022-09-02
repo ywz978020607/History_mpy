@@ -99,6 +99,9 @@ class Mymouse {
     int adc_bias_rocker = 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     int adc_bias_pointer= 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     bool mode = true; // true: scroll false: direction
+
+    float speed_factor = 0.5; // from 0.5 to 1.0 渐变速
+    
 };
 
 #endif
