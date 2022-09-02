@@ -48,15 +48,15 @@ class Mymouse {
         }
       }
 
-    void move_scroll_up_right(int val1, int val2){
-        if(val1 == 0 && val2 == 0){
-            return;
-          }
-        for(unsigned char ii=0;ii<2;ii++){
-          bleMouse.move(0,0, val1, val2); //数值可改变速度
-          delay(50); // 修改delay同样可以改变速度 - 作为效果调整使用
-        }
-      }
+    // void move_scroll_up_right(int val1, int val2){
+    //     if(val1 == 0 && val2 == 0){
+    //         return;
+    //       }
+    //     for(unsigned char ii=0;ii<2;ii++){
+    //       bleMouse.move(0,0, val1, val2); //数值可改变速度
+    //       delay(50); // 修改delay同样可以改变速度 - 作为效果调整使用
+    //     }
+    //   }
 
   public:
     // 轮询代替中断 34-39只能输入且不能上下拉

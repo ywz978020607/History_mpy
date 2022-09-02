@@ -3,14 +3,10 @@
 // // 左指针，右方向
 // #define pointer_get_val_1 change_speed(get_ADC(pointer_x, adc_bias_pointer), false)
 // #define pointer_get_val_2 change_speed(get_ADC(pointer_y, adc_bias_pointer), false)
-// #define scroll_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), false)
-// #define scroll_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), false)
 
 // 左方向，右指针
 #define pointer_get_val_1 change_speed(get_ADC(pointer_x, adc_bias_pointer), true)
 #define pointer_get_val_2 change_speed(get_ADC(pointer_y, adc_bias_pointer), true)
-#define scroll_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), true)
-#define scroll_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), true)
 
 void Mymouse::set_up(){
     // init adc
@@ -37,7 +33,7 @@ void Mymouse::set_up(){
 }
 
 void Mymouse::self_main(){
-    // 独立Key
+    // --------独立Key-----------
     if(digitalRead(s_key_1) == LOW){
         delay(50); // 消抖
         // bleMouse.click(MOUSE_LEFT);
@@ -51,42 +47,44 @@ void Mymouse::self_main(){
             }
             // copy done
 
-            // add for media control
-            temp_val_1 = scroll_get_val_1;
-            temp_val_2 = scroll_get_val_2;
-            if(temp_val_2 >= rank_num-1){
-                bleMouse.release(MOUSE_LEFT);
-                bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
-                while(scroll_get_val_2 >= rank_num-1){};
-            }
-            else if(temp_val_2 <= -rank_num+1){
-                bleMouse.release(MOUSE_LEFT);
-                bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
-                while(scroll_get_val_2 <= -rank_num+1);
-            }
+            // // add for media control
+            // temp_val_1 = scroll_get_val_1;
+            // temp_val_2 = scroll_get_val_2;
+            // if(temp_val_2 >= rank_num-1){
+            //     bleMouse.release(MOUSE_LEFT);
+            //     bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
+            //     while(scroll_get_val_2 >= rank_num-1){};
+            // }
+            // else if(temp_val_2 <= -rank_num+1){
+            //     bleMouse.release(MOUSE_LEFT);
+            //     bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
+            //     while(scroll_get_val_2 <= -rank_num+1);
+            // }
 
-            else if(temp_val_1 >= rank_num-1){ //LEFT
-                bleMouse.release(MOUSE_LEFT);
-                bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
-                while(scroll_get_val_1 >= rank_num-1);
-            }
-            else if(temp_val_1 <= -rank_num+1){ //right
-                bleMouse.release(MOUSE_LEFT);
-                bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
-                while(scroll_get_val_1 <= -rank_num+1);
-            }
-            // pause  KEY_MEDIA_PLAY_PAUSE
-            if(digitalRead(rocker_key) == HIGH){
-                bleMouse.release(MOUSE_LEFT);
-                delay(50); // 消抖
-                bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
-                while(digitalRead(rocker_key) == HIGH);
-                delay(50);
-            }
+            // else if(temp_val_1 >= rank_num-1){ //LEFT
+            //     bleMouse.release(MOUSE_LEFT);
+            //     bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+            //     while(scroll_get_val_1 >= rank_num-1);
+            // }
+            // else if(temp_val_1 <= -rank_num+1){ //right
+            //     bleMouse.release(MOUSE_LEFT);
+            //     bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
+            //     while(scroll_get_val_1 <= -rank_num+1);
+            // }
+            // // pause  KEY_MEDIA_PLAY_PAUSE
+            // if(digitalRead(rocker_key) == HIGH){
+            //     bleMouse.release(MOUSE_LEFT);
+            //     delay(50); // 消抖
+            //     bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
+            //     while(digitalRead(rocker_key) == HIGH);
+            //     delay(50);
+            // }
         };
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
+
+    // ------pointer---------
     // pointer key
     if(digitalRead(pointer_key) == HIGH){
         delay(50); // 消抖
@@ -95,63 +93,78 @@ void Mymouse::self_main(){
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
-
-    // rocker key
-    if(digitalRead(rocker_key) == HIGH){ // 注意要硬件/软件上拉
-        // 摇杆键多功能： 模式切换&普通右键
-        delay(150); // 消抖
-        delay(400);
-        if(digitalRead(rocker_key) == LOW){
-            mode = !mode;
-        }
-        else{
-            bleMouse.click(MOUSE_RIGHT);
-        }
-        while(digitalRead(rocker_key) == HIGH);
-        delay(150);
-    }
-
     // pointer ADC
     temp_val_1 = pointer_get_val_1;
     temp_val_2 = pointer_get_val_2;
     if(temp_val_1 != 0 || temp_val_2 != 0){
         move_point_right_down(temp_val_1, temp_val_2);
     }
-    
-    // rocker ADC
-    // 方向键 or 滚轮 -- scroll rocker
-    temp_val_1 = scroll_get_val_1;
-    temp_val_2 = scroll_get_val_2;
-    if(mode){
-        // 滚轮
-        if(temp_val_1 != 0 || temp_val_2 != 0){
-            move_scroll_up_right(temp_val_2, temp_val_1);
-        }
-    }
-    else{
-        // 方向键
-//        Serial.println(temp_val_1, DEC);
-        if(temp_val_2 >= rank_num-1){
-            bleKeyboard.press(KEY_UP_ARROW);
-            while(scroll_get_val_2 >= rank_num-1){};
-            bleKeyboard.releaseAll();
-        }
-        else if(temp_val_2 <= -rank_num+1){
-            bleKeyboard.press(KEY_DOWN_ARROW);
-            while(scroll_get_val_2 <= -rank_num+1);
-            bleKeyboard.releaseAll();
-        }
 
-        else if(temp_val_1 >= rank_num-1){
-            bleKeyboard.press(KEY_LEFT_ARROW);
-            while(scroll_get_val_1 >= rank_num-1);
+    // ------direction_5_keys--------
+    // dir_key
+    if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
+        // 摇杆键多功能： 模式切换&普通右键
+        delay(150); // 消抖
+        delay(400);
+        if(digitalRead(dir_key) == HIGH){
+            mode = !mode;
+        }
+        else{
+            bleMouse.click(MOUSE_RIGHT);
+        }
+        while(digitalRead(dir_key) == LOW);
+        delay(150);
+    }
+
+    // direction 4 keys left
+    // 方向键 or 滚轮
+    // 滚轮
+    if(mode){
+        if(digitalRead(dir_up) == LOW){
+            delay(50); // 消抖
+            bleMouse.move(0,0, 5, 0); //数值可改变速度
+        }
+        if(digitalRead(dir_down) == LOW){
+            delay(50); // 消抖
+            bleMouse.move(0,0, -5, 0); //数值可改变速度
+        }
+        if(digitalRead(dir_left) == LOW){
+            delay(50); // 消抖
+            bleMouse.move(0,0, 0, -5); //数值可改变速度
+        }
+        if(digitalRead(dir_right) == LOW){
+            delay(50); // 消抖
+            bleMouse.move(0,0, 0, 5); //数值可改变速度
+        }
+    }
+    // 方向键
+    else{
+        if(digitalRead(dir_up) == LOW){
+            delay(50); // 消抖
+            bleKeyboard.press(KEY_UP_ARROW);
+            while(digitalRead(pointer_key) == LOW);
             bleKeyboard.releaseAll();
         }
-        else if(temp_val_1 <= -rank_num+1){
+        if(digitalRead(dir_down) == LOW){
+            delay(50); // 消抖
+            bleKeyboard.press(KEY_DOWN_ARROW);
+            while(digitalRead(pointer_key) == LOW);
+            bleKeyboard.releaseAll();
+        }
+        if(digitalRead(dir_left) == LOW){
+            delay(50); // 消抖
+            bleKeyboard.press(KEY_LEFT_ARROW);
+            while(digitalRead(pointer_key) == LOW);
+            bleKeyboard.releaseAll();
+        }
+        if(digitalRead(dir_right) == LOW){
+            delay(50); // 消抖
             bleKeyboard.press(KEY_RIGHT_ARROW);
-            while(scroll_get_val_1 <= -rank_num+1);
-            // bleKeyboard.release(KEY_RIGHT_ARROW);
+            while(digitalRead(pointer_key) == LOW);
             bleKeyboard.releaseAll();
         }
     }
+
+    // --------seperate keys-------
+    // 
 }
