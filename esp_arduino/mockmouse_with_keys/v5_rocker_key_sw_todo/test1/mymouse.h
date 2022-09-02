@@ -101,7 +101,8 @@ class Mymouse {
     bool mode = true; // true: scroll false: direction
 
     float speed_factor = 0.5; // from 0.5 to 1.0 渐变速
-    
+    long int do_nothing_cnt = 0; //do nothing cnt
+    bool has_action = false;
 };
 
 #endif

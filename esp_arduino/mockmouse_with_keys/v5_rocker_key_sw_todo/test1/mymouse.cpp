@@ -33,6 +33,7 @@ void Mymouse::set_up(){
 }
 
 void Mymouse::self_main(){
+    has_action = true;
     // --------独立Key-----------
     if(digitalRead(s_key_1) == LOW){
         delay(50); // 消抖
@@ -86,7 +87,7 @@ void Mymouse::self_main(){
 
     // ------pointer---------
     // pointer key
-    if(digitalRead(pointer_key) == HIGH){
+    else if(digitalRead(pointer_key) == HIGH){
         delay(50); // 消抖
         bleMouse.press(MOUSE_LEFT);
         while(digitalRead(pointer_key) == HIGH);
@@ -96,13 +97,13 @@ void Mymouse::self_main(){
     // pointer ADC
     temp_val_1 = pointer_get_val_1;
     temp_val_2 = pointer_get_val_2;
-    if(temp_val_1 != 0 || temp_val_2 != 0){
+    else if(temp_val_1 != 0 || temp_val_2 != 0){
         move_point_right_down(temp_val_1, temp_val_2);
     }
 
     // ------direction_5_keys--------
     // dir_key
-    if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
+    else if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
         // 摇杆键多功能： 模式切换&普通右键
         delay(150); // 消抖
         delay(400);
@@ -119,7 +120,7 @@ void Mymouse::self_main(){
     // direction 4 keys left
     // 方向键 or 滚轮
     // 滚轮
-    if(mode){
+    else if(mode){
         if(digitalRead(dir_up) == LOW){
             delay(50); // 消抖
             bleMouse.move(0,0, 5, 0); //数值可改变速度
@@ -138,7 +139,7 @@ void Mymouse::self_main(){
         }
     }
     // 方向键
-    else{
+    else if (!mode){
         if(digitalRead(dir_up) == LOW){
             delay(50); // 消抖
             bleKeyboard.press(KEY_UP_ARROW);
@@ -166,5 +167,23 @@ void Mymouse::self_main(){
     }
 
     // --------seperate keys-------
-    // 
+    // else if()
+    
+
+    // -----do nothing and manage speed_factor-----
+    // else {
+    //     // do nothing
+    //     has_action = false;
+    // }
+    // if(has_action){
+    //     do_nothing_cnt = 0;
+    //     speed_factor = (speed_factor < 1.0)?(speed_factor + 0.005):speed_factor;
+    // }
+    // else{
+    //     do_nothing_cnt += 1;
+    // }
+    // if(do_nothing_cnt >= 1000){
+    //     speed_factor = 0.5; //reset
+    // }
+
 }
