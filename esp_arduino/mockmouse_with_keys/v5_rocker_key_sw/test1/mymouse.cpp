@@ -15,17 +15,16 @@ void Mymouse::set_up(){
     // battery ADC(ADC2)
     Serial.println(analogRead(adc_battery), DEC);
     // set bias
-    Serial.println((get_bias(rocker_x) + get_bias(rocker_y))/2, DEC);
-    adc_bias_rocker = (get_bias(rocker_x) + get_bias(rocker_y))/2;
+    Serial.println((get_bias(pointer_x) + get_bias(pointer_y))/2, DEC);
     adc_bias_pointer = (get_bias(pointer_x) + get_bias(pointer_y))/2;
     // init gpio when not interrupt
-    for(int key_num: pullup_input){
-        pinMode(key_num, INPUT_PULLUP);
+    for(int idx = 0; idx < 11; idx++) {
+        pinMode(pullup_input[idx], INPUT_PULLUP);
     }
-    for(int key_num: pulldown_input){
-        pinMode(key_num, INPUT_PULLDOWN);
+    for(int idx = 0; idx < 1; idx++) {
+        pinMode(pulldown_input[idx], INPUT_PULLDOWN);
     }
-    //pinMode(signal_out, OUTPUT);
+    digitalWrite(signal_out, HIGH);
 
     // init ble
     bleKeyboard.begin();
@@ -33,9 +32,10 @@ void Mymouse::set_up(){
 }
 
 void Mymouse::self_main(){
-    has_action = true;
+    has_action = false;
     // --------独立Key-----------
     if(digitalRead(s_key_1) == LOW){
+        has_action = true;
         delay(50); // 消抖
         // bleMouse.click(MOUSE_LEFT);
         bleMouse.press(MOUSE_LEFT);
@@ -87,7 +87,8 @@ void Mymouse::self_main(){
 
     // ------pointer---------
     // pointer key
-    else if(digitalRead(pointer_key) == HIGH){
+    if(digitalRead(pointer_key) == HIGH){
+        has_action = true;
         delay(50); // 消抖
         bleMouse.press(MOUSE_LEFT);
         while(digitalRead(pointer_key) == HIGH);
@@ -97,13 +98,15 @@ void Mymouse::self_main(){
     // pointer ADC
     temp_val_1 = pointer_get_val_1;
     temp_val_2 = pointer_get_val_2;
-    else if(temp_val_1 != 0 || temp_val_2 != 0){
+    if(temp_val_1 != 0 || temp_val_2 != 0){
+        has_action = true;
         move_point_right_down(temp_val_1, temp_val_2);
     }
 
     // ------direction_5_keys--------
     // dir_key
-    else if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
+    if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
+        has_action = true;
         // 摇杆键多功能： 模式切换&普通右键
         delay(150); // 消抖
         delay(400);
@@ -120,45 +123,53 @@ void Mymouse::self_main(){
     // direction 4 keys left
     // 方向键 or 滚轮
     // 滚轮
-    else if(mode){
+    if(mode){
         if(digitalRead(dir_up) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleMouse.move(0,0, 5, 0); //数值可改变速度
         }
         if(digitalRead(dir_down) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleMouse.move(0,0, -5, 0); //数值可改变速度
         }
         if(digitalRead(dir_left) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleMouse.move(0,0, 0, -5); //数值可改变速度
         }
         if(digitalRead(dir_right) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleMouse.move(0,0, 0, 5); //数值可改变速度
         }
     }
     // 方向键
-    else if (!mode){
+    else{
         if(digitalRead(dir_up) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_UP_ARROW);
             while(digitalRead(pointer_key) == LOW);
             bleKeyboard.releaseAll();
         }
         if(digitalRead(dir_down) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_DOWN_ARROW);
             while(digitalRead(pointer_key) == LOW);
             bleKeyboard.releaseAll();
         }
         if(digitalRead(dir_left) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_LEFT_ARROW);
             while(digitalRead(pointer_key) == LOW);
             bleKeyboard.releaseAll();
         }
         if(digitalRead(dir_right) == LOW){
+            has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_RIGHT_ARROW);
             while(digitalRead(pointer_key) == LOW);
@@ -171,10 +182,6 @@ void Mymouse::self_main(){
     
 
     // -----do nothing and manage speed_factor-----
-    // else {
-    //     // do nothing
-    //     has_action = false;
-    // }
     // if(has_action){
     //     do_nothing_cnt = 0;
     //     speed_factor = (speed_factor < 1.0)?(speed_factor + 0.005):speed_factor;

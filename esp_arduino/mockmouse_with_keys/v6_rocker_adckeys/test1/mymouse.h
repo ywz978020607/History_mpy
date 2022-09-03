@@ -8,7 +8,6 @@
 #include "BleComboMouse.h"
 // #include <BleMouse.h>
 
-
 class Mymouse {
   public:
     // Mymouse();
@@ -59,33 +58,27 @@ class Mymouse {
     //   }
 
   public:
+    // ADC1: 32, 33, 34, ...
+    // 若ADC1用完了，只能用ADC2-安全范围12~14,25~27
     // 轮询代替中断 34-39只能输入且不能上下拉
-    int dir_key = 21;
-    int dir_up = 25;
-    int dir_down = 4;
-    int dir_left = 22;
-    int dir_right= 32;
-    
+    int adc_key = 32; //两组5向开关
+
     int key_left_up   = 17;
     int key_left_down = 26;
     int key_right_up  = 16;
     int key_right_down= 27;
     
     int s_key_1 = 19;
-    int s_key_2 = 23;
-
 
     int pointer_key = 18; //摇杆自带
     int pointer_x = 34;
     int pointer_y = 35;
     
-    int adc_battery = 33; // 采集ADC电压，由于ADC1用完了，只能用ADC2-安全范围12~14,25~27
+    int adc_battery = 33;
     int signal_out = 5;
     
-    int pullup_input[] = {dir_key, dir_up, dir_down, dir_left,\
-        dir_right, key_left_up, key_left_down, key_right_up, key_right_down,\
-        s_key_1, s_key_2};
-    int pulldown_input[] = {pointer_key};
+    int pullup_input[5] = {key_left_up, key_left_down, key_right_up, key_right_down, s_key_1};
+    int pulldown_input[1] = {pointer_key};
 
 
     //
@@ -96,9 +89,11 @@ class Mymouse {
     int temp_val_2 = 0;
     int adc_bit = 12;
     int rank_num = 4; //4挡 [0,8] 9个值 -- 由于默认向下取整，故加上2^(adc_bit-rank_num-1); // 2^(adc_bit - rank_num)为1 故加上一半的bias用来取整
-    int adc_bias_rocker = 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     int adc_bias_pointer= 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     bool mode = true; // true: scroll false: direction
+
+    //adc_key
+    int adc_key_num = 10; // 4096 / adc_key_num 为每个挡位的中心值，output = (min(adc+Δ/2, 4095))/Δ, Δ=2^(adc_bit - adc_key_num), Δ/2=2^(adc_bit - adc_key_num - 1)
 
     float speed_factor = 0.5; // from 0.5 to 1.0 渐变速
     long int do_nothing_cnt = 0; //do nothing cnt
