@@ -21,7 +21,7 @@ void Mymouse::set_up(){
     for(int idx = 0; idx < 5; idx++) {
         pinMode(pullup_input[idx], INPUT_PULLUP);
     }
-    for(int idx = 0; idx < 1; idx++) {
+    for(int idx = 0; idx < 2; idx++) {
         pinMode(pulldown_input[idx], INPUT_PULLDOWN);
     }
     digitalWrite(signal_out, HIGH);
@@ -103,79 +103,88 @@ void Mymouse::self_main(){
         move_point_right_down(temp_val_1, temp_val_2);
     }
 
-    // ------direction_5_keys--------
-    // dir_key
-    if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
+    // // ------direction_keys--------
+    temp_val_1 = get_ADC_keys(adc_key);
+    if(temp_val_1 != 0){
         has_action = true;
-        // 摇杆键多功能： 模式切换&普通右键
-        delay(150); // 消抖
-        delay(400);
-        if(digitalRead(dir_key) == HIGH){
-            mode = !mode;
-        }
-        else{
-            bleMouse.click(MOUSE_RIGHT);
-        }
-        while(digitalRead(dir_key) == LOW);
-        delay(150);
-    }
-
-    // direction 4 keys left
-    // 方向键 or 滚轮
-    // 滚轮
-    if(mode){
-        if(digitalRead(dir_up) == LOW){
-            has_action = true;
+        // TODO
+        if(temp_val_1 == AdcKey::Dir1_Up){
             delay(50); // 消抖
             bleMouse.move(0,0, 5, 0); //数值可改变速度
         }
-        if(digitalRead(dir_down) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleMouse.move(0,0, -5, 0); //数值可改变速度
-        }
-        if(digitalRead(dir_left) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleMouse.move(0,0, 0, -5); //数值可改变速度
-        }
-        if(digitalRead(dir_right) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleMouse.move(0,0, 0, 5); //数值可改变速度
-        }
     }
-    // 方向键
-    else{
-        if(digitalRead(dir_up) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleKeyboard.press(KEY_UP_ARROW);
-            while(digitalRead(pointer_key) == LOW);
-            bleKeyboard.releaseAll();
-        }
-        if(digitalRead(dir_down) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleKeyboard.press(KEY_DOWN_ARROW);
-            while(digitalRead(pointer_key) == LOW);
-            bleKeyboard.releaseAll();
-        }
-        if(digitalRead(dir_left) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleKeyboard.press(KEY_LEFT_ARROW);
-            while(digitalRead(pointer_key) == LOW);
-            bleKeyboard.releaseAll();
-        }
-        if(digitalRead(dir_right) == LOW){
-            has_action = true;
-            delay(50); // 消抖
-            bleKeyboard.press(KEY_RIGHT_ARROW);
-            while(digitalRead(pointer_key) == LOW);
-            bleKeyboard.releaseAll();
-        }
-    }
+    // // dir_key
+    // if(digitalRead(dir_key) == LOW){ // 注意要硬件/软件上拉
+    //     has_action = true;
+    //     // 摇杆键多功能： 模式切换&普通右键
+    //     delay(150); // 消抖
+    //     delay(400);
+    //     if(digitalRead(dir_key) == HIGH){
+    //         mode = !mode;
+    //     }
+    //     else{
+    //         bleMouse.click(MOUSE_RIGHT);
+    //     }
+    //     while(digitalRead(dir_key) == LOW);
+    //     delay(150);
+    // }
+
+    // // direction 4 keys left
+    // // 方向键 or 滚轮
+    // // 滚轮
+    // if(mode){
+    //     if(digitalRead(dir_up) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleMouse.move(0,0, 5, 0); //数值可改变速度
+    //     }
+    //     if(digitalRead(dir_down) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleMouse.move(0,0, -5, 0); //数值可改变速度
+    //     }
+    //     if(digitalRead(dir_left) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleMouse.move(0,0, 0, -5); //数值可改变速度
+    //     }
+    //     if(digitalRead(dir_right) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleMouse.move(0,0, 0, 5); //数值可改变速度
+    //     }
+    // }
+    // // 方向键
+    // else{
+    //     if(digitalRead(dir_up) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleKeyboard.press(KEY_UP_ARROW);
+    //         while(digitalRead(pointer_key) == LOW);
+    //         bleKeyboard.releaseAll();
+    //     }
+    //     if(digitalRead(dir_down) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleKeyboard.press(KEY_DOWN_ARROW);
+    //         while(digitalRead(pointer_key) == LOW);
+    //         bleKeyboard.releaseAll();
+    //     }
+    //     if(digitalRead(dir_left) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleKeyboard.press(KEY_LEFT_ARROW);
+    //         while(digitalRead(pointer_key) == LOW);
+    //         bleKeyboard.releaseAll();
+    //     }
+    //     if(digitalRead(dir_right) == LOW){
+    //         has_action = true;
+    //         delay(50); // 消抖
+    //         bleKeyboard.press(KEY_RIGHT_ARROW);
+    //         while(digitalRead(pointer_key) == LOW);
+    //         bleKeyboard.releaseAll();
+    //     }
+    // }
 
     // --------seperate keys-------
     // else if()

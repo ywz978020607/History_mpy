@@ -8,6 +8,13 @@
 #include "BleComboMouse.h"
 // #include <BleMouse.h>
 
+enum AdcKey : int {
+  Dir1_Up: 1,
+  Dir1_Down: 1,
+  Dir1_Left: 1,
+  Dir1_Right: 1,
+};
+
 class Mymouse {
   public:
     // Mymouse();
@@ -56,6 +63,10 @@ class Mymouse {
     //       delay(50); // 修改delay同样可以改变速度 - 作为效果调整使用
     //     }
     //   }
+    
+    int get_ADC_keys(int pin_val){
+      return (analogRead(pin_val) + (adc_key_internal>>1) ) / adc_key_internal;
+    }
 
   public:
     // ADC1: 32, 33, 34, ...
@@ -78,7 +89,7 @@ class Mymouse {
     int signal_out = 5;
     
     int pullup_input[5] = {key_left_up, key_left_down, key_right_up, key_right_down, s_key_1};
-    int pulldown_input[1] = {pointer_key};
+    int pulldown_input[2] = {pointer_key, adc_key};
 
 
     //
@@ -92,8 +103,9 @@ class Mymouse {
     int adc_bias_pointer= 144; // 补偿-调试时中间位置与中间值的采样差 -- 摇杆模块采用3.3V供电  自动校正
     bool mode = true; // true: scroll false: direction
 
-    //adc_key
-    int adc_key_num = 10; // 4096 / adc_key_num 为每个挡位的中心值，output = (min(adc+Δ/2, 4095))/Δ, Δ=2^(adc_bit - adc_key_num), Δ/2=2^(adc_bit - adc_key_num - 1)
+    //adc_key - 采用数值运算
+    int adc_key_num = 10; // 4096 / adc_key_num 为每个挡位的中心值，output = (adc+Δ/2)//Δ, Δ=(1<<adc_bit) // adc_key_num
+    int adc_key_internal = (1 << adc_bit) / adc_key_num; //int adc_key_internal_half = adc_key_internal >> 1;
 
     float speed_factor = 0.5; // from 0.5 to 1.0 渐变速
     long int do_nothing_cnt = 0; //do nothing cnt
