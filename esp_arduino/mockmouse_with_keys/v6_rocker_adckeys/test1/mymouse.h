@@ -9,10 +9,17 @@
 // #include <BleMouse.h>
 
 enum AdcKey : int {
-  Dir1_Up: 1,
-  Dir1_Down: 1,
-  Dir1_Left: 1,
-  Dir1_Right: 1,
+  Dir1_Right= 1,
+  Dir1_Ok   = 2,
+  Dir1_Up   = 3,
+  Dir1_Left = 4,
+  Dir1_Down = 5,
+
+  Dir2_Right= 6,
+  Dir2_Ok   = 7,
+  Dir2_Up   = 8,
+  Dir2_Left = 9,
+  Dir2_Down = 10,
 };
 
 class Mymouse {
