@@ -48,41 +48,34 @@ void Mymouse::self_main(){
             }
             // copy done
 
-            // // add for media control
-            // temp_val_1 = scroll_get_val_1;
-            // temp_val_2 = scroll_get_val_2;
-            // if(temp_val_2 >= rank_num-1){
-            //     bleMouse.release(MOUSE_LEFT);
-            //     bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
-            //     while(scroll_get_val_2 >= rank_num-1){};
-            // }
-            // else if(temp_val_2 <= -rank_num+1){
-            //     bleMouse.release(MOUSE_LEFT);
-            //     bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
-            //     while(scroll_get_val_2 <= -rank_num+1);
-            // }
 
-            // else if(temp_val_1 >= rank_num-1){ //LEFT
-            //     bleMouse.release(MOUSE_LEFT);
-            //     bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
-            //     while(scroll_get_val_1 >= rank_num-1);
-            // }
-            // else if(temp_val_1 <= -rank_num+1){ //right
-            //     bleMouse.release(MOUSE_LEFT);
-            //     bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
-            //     while(scroll_get_val_1 <= -rank_num+1);
-            // }
-            // // pause  KEY_MEDIA_PLAY_PAUSE
-            // if(digitalRead(rocker_key) == HIGH){
-            //     bleMouse.release(MOUSE_LEFT);
-            //     delay(50); // 消抖
-            //     bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
-            //     while(digitalRead(rocker_key) == HIGH);
-            //     delay(50);
-            // }
+            // add for media control
+            if(digitalRead(key_left_up) == LOW){
+                bleMouse.release(MOUSE_LEFT);
+                bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
+                while(digitalRead(key_left_up) == LOW);
+            }
+            if(digitalRead(key_left_down) == LOW){
+                bleMouse.release(MOUSE_LEFT);
+                bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
+                while(digitalRead(key_left_down) == LOW);
+            }
         };
         bleMouse.release(MOUSE_LEFT);
         delay(50);
+    }
+
+    if(digitalRead(key_left_up) == LOW){
+        has_action = true;
+        delay(50); // 消抖
+        bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+        while(digitalRead(key_left_up) == LOW);
+    }
+    if(digitalRead(key_left_down) == LOW){
+        has_action = true;
+        delay(50); // 消抖
+        bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+        while(digitalRead(key_left_down) == LOW);
     }
 
     // ------pointer---------
@@ -91,7 +84,15 @@ void Mymouse::self_main(){
         has_action = true;
         delay(50); // 消抖
         bleMouse.press(MOUSE_LEFT);
-        while(digitalRead(pointer_key) == HIGH);
+        while(digitalRead(pointer_key) == HIGH){
+            // copy from below
+            temp_val_1 = pointer_get_val_1;
+            temp_val_2 = pointer_get_val_2;
+            if(temp_val_1 != 0 || temp_val_2 != 0){
+                move_point_right_down(temp_val_1, temp_val_2);
+            }
+            // copy done
+        }
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
@@ -127,22 +128,22 @@ void Mymouse::self_main(){
         if(digitalRead(dir_up) == LOW){
             has_action = true;
             delay(50); // 消抖
-            bleMouse.move(0,0, 5, 0); //数值可改变速度
+            bleMouse.move(0,0, 2, 0); //数值可改变速度
         }
         if(digitalRead(dir_down) == LOW){
             has_action = true;
             delay(50); // 消抖
-            bleMouse.move(0,0, -5, 0); //数值可改变速度
+            bleMouse.move(0,0, -2, 0); //数值可改变速度
         }
         if(digitalRead(dir_left) == LOW){
             has_action = true;
             delay(50); // 消抖
-            bleMouse.move(0,0, 0, -5); //数值可改变速度
+            bleMouse.move(0,0, 0, -2); //数值可改变速度
         }
         if(digitalRead(dir_right) == LOW){
             has_action = true;
             delay(50); // 消抖
-            bleMouse.move(0,0, 0, 5); //数值可改变速度
+            bleMouse.move(0,0, 0, 2); //数值可改变速度
         }
     }
     // 方向键
@@ -151,28 +152,31 @@ void Mymouse::self_main(){
             has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_UP_ARROW);
-            while(digitalRead(pointer_key) == LOW);
+            while(digitalRead(dir_up) == LOW);
             bleKeyboard.releaseAll();
         }
         if(digitalRead(dir_down) == LOW){
             has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_DOWN_ARROW);
-            while(digitalRead(pointer_key) == LOW);
+            while(digitalRead(dir_down) == LOW);
+            delay(50); // 消抖
             bleKeyboard.releaseAll();
         }
         if(digitalRead(dir_left) == LOW){
             has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_LEFT_ARROW);
-            while(digitalRead(pointer_key) == LOW);
+            while(digitalRead(dir_left) == LOW);
+            delay(50); // 消抖
             bleKeyboard.releaseAll();
         }
         if(digitalRead(dir_right) == LOW){
             has_action = true;
             delay(50); // 消抖
             bleKeyboard.press(KEY_RIGHT_ARROW);
-            while(digitalRead(pointer_key) == LOW);
+            while(digitalRead(dir_right) == LOW);
+            delay(50); // 消抖
             bleKeyboard.releaseAll();
         }
     }
