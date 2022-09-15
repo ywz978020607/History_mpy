@@ -1,3 +1,4 @@
+# 全亮渐变
 import random
 import time
 
@@ -6,23 +7,16 @@ from ws2812 import *
 
 #亮度衰减
 decay = 10
-
+num = 16
 
 spi = SPI(1)
 spi.init(baudrate=3200000,mosi=Pin(23))
 
-chain = WS2812(spi,led_count=8)
+chain = WS2812(spi,led_count=num)
 
 data=[
-    (0,0,0),
-    (0,0,0),
-    (0,0,0),
-    (0,0,0),
-    (0,0,0),
-    (0,0,0),
-    (0,0,0),
-    (0,0,0),
-]
+    (0,0,0)
+] * num
 chain.show(data)
 color_val = [128,128,128]
 
@@ -82,3 +76,4 @@ def main():
     while 1:
         cal_val()
 
+main()
