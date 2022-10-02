@@ -30,7 +30,8 @@ void Mymouse::set_up(){
 }
 
 void Mymouse::self_main(){
-    // 独立Key
+    has_action = false;
+    // -------------独立Key
     if(digitalRead(s_key_left) == LOW){
         has_action = true;
         delay(50); // 消抖
@@ -47,34 +48,34 @@ void Mymouse::self_main(){
 
 
             // add for media control
-            if(digitalRead(key_left_up) == LOW){
+            if(digitalRead(key_up) == LOW){
                 bleMouse.release(MOUSE_LEFT);
                 bleKeyboard.write(KEY_MEDIA_VOLUME_UP);
-                while(digitalRead(key_left_up) == LOW);
+                while(digitalRead(key_up) == LOW);
             }
-            if(digitalRead(key_left_down) == LOW){
+            if(digitalRead(key_down) == LOW){
                 bleMouse.release(MOUSE_LEFT);
                 bleKeyboard.write(KEY_MEDIA_VOLUME_DOWN);
-                while(digitalRead(key_left_down) == LOW);
+                while(digitalRead(key_down) == LOW);
             }
         };
         bleMouse.release(MOUSE_LEFT);
         delay(50);
     }
-    if(digitalRead(key_left_up) == LOW){
+    if(digitalRead(key_up) == LOW){
         has_action = true;
         delay(50); // 消抖
         bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
-        while(digitalRead(key_left_up) == LOW);
+        while(digitalRead(key_up) == LOW);
     }
-    if(digitalRead(key_left_down) == LOW){
+    if(digitalRead(key_down) == LOW){
         has_action = true;
         delay(50); // 消抖
         bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
-        while(digitalRead(key_left_down) == LOW);
+        while(digitalRead(key_down) == LOW);
     }
 
-    // pointer key
+    // -------------pointer key
     if(digitalRead(pointer_key) == HIGH){
         delay(50); // 消抖
         bleMouse.press(MOUSE_LEFT);
@@ -83,7 +84,7 @@ void Mymouse::self_main(){
         delay(50);
     }
 
-    // rocker key
+    // -------------rocker key
     if(digitalRead(rocker_key) == HIGH){ // 注意要硬件/软件上拉
         // 摇杆键多功能： 模式切换&普通右键
         delay(150); // 消抖
@@ -98,14 +99,14 @@ void Mymouse::self_main(){
         delay(150);
     }
 
-    // pointer ADC
+    // -------------pointer ADC
     temp_val_1 = pointer_get_val_1;
     temp_val_2 = pointer_get_val_2;
     if(temp_val_1 != 0 || temp_val_2 != 0){
         move_point_right_down(temp_val_1, temp_val_2);
     }
     
-    // rocker ADC
+    // -------------rocker ADC
     // 方向键 or 滚轮 -- scroll rocker
     temp_val_1 = scroll_get_val_1;
     temp_val_2 = scroll_get_val_2;
@@ -141,4 +142,16 @@ void Mymouse::self_main(){
             bleKeyboard.releaseAll();
         }
     }
+
+    // -----do nothing and manage speed_factor-----
+    // if(has_action){
+    //     do_nothing_cnt = 0;
+    //     speed_factor = (speed_factor < 1.0)?(speed_factor + 0.005):speed_factor;
+    // }
+    // else{
+    //     do_nothing_cnt += 1;
+    // }
+    // if(do_nothing_cnt >= 1000){
+    //     speed_factor = 0.5; //reset
+    // }
 }
