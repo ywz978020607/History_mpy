@@ -60,7 +60,7 @@ class Mymouse {
 
   public:
     // 轮询代替中断 34-39只能输入且不能上下拉
-    int rocker_key = 26; //摇杆自带
+    int rocker_key = 17; //摇杆自带
     int rocker_x = 32;
     int rocker_y = 33;
 
@@ -68,9 +68,17 @@ class Mymouse {
     int pointer_x = 34;
     int pointer_y = 35;
 
-    int s_key_1 = 23;
-    
+    int key_up   = 16;
+    int key_down = 26;
+    int key_right = 19;
+
+    int s_key_left = 25;
+
+    int pullup_input[4] = {key_up, key_down, key_right, s_key_left};
+    int pulldown_input[2] = {pointer_key, rocker_key};
+
     int adc_battery = 27; // 采集ADC电压，由于ADC1用完了，只能用ADC2-安全范围12~14,25~27
+    int signal_out = 5;
 
     BleComboKeyboard  bleKeyboard;
     BleComboMouse bleMouse = BleComboMouse(&bleKeyboard);
