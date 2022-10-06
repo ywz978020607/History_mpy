@@ -9,12 +9,11 @@ https://github.com/T-vK/ESP32-BLE-Keyboard
 |[电池500mA](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d2TwcO6&id=613909574730&_u=628qvnn87a78)|10.5|西瓜红[602040-500毫安]|
 |[拨动开关三档20只](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d3jlPVx&id=13302149297&_u=628qvnn8fc2a)|2.3|拨动开关 SS-12D00 1P2T 立式&nbsp：柄高5MM (20个)|
 |[单片机](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d2TwcO6&id=580133936548&_u=628qvnn84c9e)| 18+3|芯片CH9102 新款|
-|[贴片按键40只](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8dudo0K0&id=608931747899&_u=628qvnn80b52)|2.62|散装/3*6*5/贴片2脚 (40只)|
-|[侧按键直插20只](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8dudo0K0&id=35609447792&_u=628qvnn8e77a)|2.71|3*6*5侧插轻触按键开关 边二脚侧按(20个）|
+|[贴片按键40只](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8dudo0K0&id=608931747899&_u=628qvnn80b52)|2.62|散装/3\*6\*5/贴片2脚 (40只)|
+|[侧按键直插20只](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8dudo0K0&id=35609447792&_u=628qvnn8e77a)|2.71|3\*6\*5侧插轻触按键开关 边二脚侧按(20个）|
 |[NS摇杆](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d3jlPVx&id=640317236517&_u=628qvnn8eef4)|3.5+10||
-|[五向拨杆-可选](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d3jlPVx&id=595134302480&_u=628qvnn88140)|0.78|10*10*9MM|
-
-
+|[五向拨杆-可选](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d3jlPVx&id=595134302480&_u=628qvnn88140)|0.78|10\*10\*9MM|
+|[排母10个](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8dyMQyUj&id=13301626021&_u=628qvnn86f0d)|2.58|2\*10P|
 
 二合一
 ```
