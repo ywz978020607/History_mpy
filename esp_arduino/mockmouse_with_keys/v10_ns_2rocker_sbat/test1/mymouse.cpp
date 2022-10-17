@@ -1,7 +1,7 @@
 #include "mymouse.h"
 
-#define pointer_get_val_1 change_speed(get_ADC(pointer_x, adc_bias_pointer), true)
-#define pointer_get_val_2 change_speed(get_ADC(pointer_y, adc_bias_pointer), true)
+#define pointer_get_val_1 change_speed(get_ADC(pointer_x, adc_bias_pointer), false)
+#define pointer_get_val_2 change_speed(get_ADC(pointer_y, adc_bias_pointer), false)
 #define scroll_get_val_1 change_speed(get_ADC(rocker_x, adc_bias_rocker), false)
 #define scroll_get_val_2 change_speed(get_ADC(rocker_y, adc_bias_rocker), false)
 
