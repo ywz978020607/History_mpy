@@ -2,6 +2,8 @@ https://github.com/ServAlex/ESP32-BLE-Combo
 https://github.com/T-vK/ESP32-BLE-Keyboard
 
 
+推荐焊接顺序：电源管理模块-贴片电阻&led-排母-摇杆。其他随意：按键-开关-摇杆-侧按键-电池
+
 淘宝材料清单
 |材料|价格|备注|
 | ----------- | ----------- | ----------- |
