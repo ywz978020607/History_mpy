@@ -13,4 +13,5 @@
 
 # 软串口源码&编译：
 - esp32: https://github.com/ywz978020607/micropython/tree/esp32soft
+- esp32c3: https://github.com/ywz978020607/micropython/tree/esp32softc3
 - esp8266: https://github.com/ywz978020607/micropython/tree/8266soft
