@@ -12,6 +12,4 @@
 对于Micropython库各种用法及组件、arduino-esp32-ble库可参考github搜索History_mpy仓库。
 
 # 软串口源码&编译：
-- esp32: https://github.com/ywz978020607/micropython/tree/esp32soft
-- esp32c3: https://github.com/ywz978020607/micropython/tree/esp32softc3
-- esp8266: https://github.com/ywz978020607/micropython/tree/8266soft
+见Micropython_esp32_8266/mpy固件源码编译/，支持esp8266，esp32全系列
