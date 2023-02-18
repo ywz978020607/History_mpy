@@ -53,9 +53,9 @@ while 1:
             open()
             time.sleep(data_value[0]) #一般是1s  强制关机5~6s
             close()
-            data_value[0] = 0
-            #update
-            upload()
+        data_value[0] = 0
+        #update
+        upload()
     except:
         print("error")
     time.sleep(60)
