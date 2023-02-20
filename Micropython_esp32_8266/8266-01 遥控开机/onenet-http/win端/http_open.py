@@ -8,7 +8,7 @@ url="http://api.heclouds.com/devices/611890860/datapoints"
 headers={'api-key':'gjU2173SbsvrSi4OpLyK8IXW3tc='}
 data_name = ["lock"]
 
-def upload(val=1):
+def upload(val):
     global data_name#,data_value
     temp_list = []
     for ii in range(len(data_name)):
@@ -31,17 +31,11 @@ def down():
 
 if __name__ == "__main__":
     down()
-
-    if len(sys.argv) > 1:
-        if sys.argv[1] != "check":
-            upload(val = sys.argv[1])
-            down()
-    else:
-        upload()
-        down()
+    if len(sys.argv) > 1 and sys.argv[1] == "check":
+        exit()
+    
+    val = sys.argv[1] if len(sys.argv) > 1 else 1
+    upload(val = val)
+    down()
 
     print("ok")
-
-#强制重启
-# upload(6)
-

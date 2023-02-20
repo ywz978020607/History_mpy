@@ -1,13 +1,12 @@
 from machine import *
-con = Pin(2, Pin.OUT, Pin.PULL_UP)
+con = Pin(12, Pin.OUT, Pin.PULL_UP)
 con.on()
 
 from T1 import *
 import time
 #esp32端
 ###############################################
-# CLIENT_ID = "963736788"
-CLIENT_ID = "1048953737"
+CLIENT_ID = "1048956392"
 username='234533'
 password='2kJV69exxxxxxxxx'
 ###############################################
