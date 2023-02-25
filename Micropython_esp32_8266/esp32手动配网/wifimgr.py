@@ -52,7 +52,10 @@ def get_connection():
                 connected = do_connect(ssid, None)
             if connected:
                 break
-
+        for ssid in profiles:
+            connected = do_connect(ssid, password)
+            if connected:
+                break
     except OSError as e:
         print("exception", str(e))
 
@@ -97,7 +100,6 @@ def do_connect(ssid, password):
         print('.', end='')
     if connected:
         print('\nConnected. Network config: ', wlan_sta.ifconfig())
-        wlan_ap.active(False)
     else:
         print('\nFailed. Not Connected to: ' + ssid)
     return connected

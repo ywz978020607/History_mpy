@@ -52,7 +52,10 @@ def get_connection():
                 connected = do_connect(ssid, None)
             if connected:
                 break
-
+        for ssid in profiles:
+            connected = do_connect(ssid, password)
+            if connected:
+                break
     except OSError as e:
         print("exception", str(e))
 
