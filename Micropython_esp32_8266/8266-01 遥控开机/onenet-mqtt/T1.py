@@ -2,7 +2,8 @@ from machine import *
 import machine
 import time
 #wifi
-import mywifi
+# import mywifi 
+import wifimgr
 import json
 from simple import MQTTClient
 
@@ -16,7 +17,8 @@ class T1():
         self.password = password
 
     def wifi(self,SSID='ywzywz',PASS='12345678'):
-        self.wifiobj = mywifi.WIFI(SSID=SSID,PASS=PASS)
+        # self.wifiobj = mywifi.WIFI(SSID=SSID,PASS=PASS)
+        self.wifiobj = wifimgr.get_connection() #"""return a working WLAN(STA_IF) instance or None"""
     
     def mqttInit(self):
         self.c = MQTTClient(self.CLIENT_ID, self.SERVER,6002,self.username,self.password)
