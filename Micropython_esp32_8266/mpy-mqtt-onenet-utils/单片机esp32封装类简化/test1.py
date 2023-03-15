@@ -8,7 +8,7 @@ password='2kJV69xxxxxxxxxxxx'
 ###############################################
 myMQTT = T1(CLIENT_ID,username,password)
 #wifi
-myMQTT.wifi("ywzywz","12345678")
+# myMQTT.wifi("ywzywz","12345678")
 myMQTT.mqttInit()
 ###############################################
 # Init sensor
