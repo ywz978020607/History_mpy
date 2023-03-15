@@ -4,13 +4,14 @@ import ure
 import time
 from machine import reset
 
-ap_ssid = "WifiManager"
+ap_ssid = "WifiManager1"
 ap_password = "12345678"
 ap_authmode = 3  # WPA2
 
 NETWORK_PROFILES = 'wifi.dat'
 
 wlan_ap = network.WLAN(network.AP_IF)
+wlan_ap.active(False)
 wlan_sta = network.WLAN(network.STA_IF)
 
 server_socket = None
@@ -38,31 +39,34 @@ def get_connection():
         networks = wlan_sta.scan()
 
         AUTHMODE = {0: "open", 1: "WEP", 2: "WPA-PSK", 3: "WPA2-PSK", 4: "WPA/WPA2-PSK"}
-        for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
-            ssid = ssid.decode('utf-8')
-            encrypted = authmode > 0
-            print("ssid: %s chan: %d rssi: %d authmode: %s" % (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
-            if encrypted:
-                if ssid in profiles:
-                    password = profiles[ssid]
-                    connected = do_connect(ssid, password)
-                else:
-                    print("skipping unknown encrypted network")
-            else:  # open
-                connected = do_connect(ssid, None)
-            if connected:
-                break
-        for ssid in profiles:
-            connected = do_connect(ssid, password)
-            if connected:
-                break
+        # for ssid in profiles:
+        #     password = profiles[ssid]
+        #     connected = do_connect(ssid, password)
+        #     if connected:
+        #         break
+        if not wlan_sta.isconnected():
+            for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
+                ssid = ssid.decode('utf-8')
+                encrypted = authmode > 0
+                print("ssid: %s chan: %d rssi: %d authmode: %s" % (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
+                if encrypted:
+                    if ssid in profiles:
+                        password = profiles[ssid]
+                        connected = do_connect(ssid, password)
+                    else:
+                        print("skipping unknown encrypted network")
+                else:  # open
+                    # connected = do_connect(ssid, None)
+                    pass
+                if connected:
+                    break
     except OSError as e:
         print("exception", str(e))
 
     # start web server for connection manager:
     if not connected:
+        wlan_sta.active(False)
         connected = start()
-
     return wlan_sta if connected else None
 
 
@@ -89,10 +93,10 @@ def write_profiles(profiles):
 def do_connect(ssid, password):
     wlan_sta.active(True)
     if wlan_sta.isconnected():
-        return None
+        return True
     print('Trying to connect to %s...' % ssid)
     wlan_sta.connect(ssid, password)
-    for retry in range(100):
+    for retry in range(200):
         connected = wlan_sta.isconnected()
         if connected:
             break
@@ -186,7 +190,8 @@ def handle_configure(client, request):
         send_response(client, "SSID must be provided", status_code=400)
         return False
 
-    if do_connect(ssid, password):
+    do_connect(ssid, password)
+    if wlan_sta.isconnected():
         response = """\
             <html>
                 <center>
@@ -208,6 +213,8 @@ def handle_configure(client, request):
         profiles[ssid] = password
         write_profiles(profiles)
         time.sleep(5)
+        # done
+        wlan_ap.active(False)
         reset()
         return True
 
@@ -285,23 +292,24 @@ def start(port=80):
             except OSError:
                 pass
 
-            print("Request is: {}".format(request))
-            if "HTTP" not in request:  # skip invalid requests
-                continue
-
-            # version 1.9 compatibility
             try:
-                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).decode("utf-8").rstrip("/")
-            except Exception:
-                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
-            print("URL is {}".format(url))
+                print("Request is: {}".format(request))
+                if "HTTP" not in request:  # skip invalid requests
+                    continue
+                # version 1.9 compatibility
+                try:
+                    url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).decode("utf-8").rstrip("/")
+                except Exception:
+                    url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
+                print("URL is {}".format(url))
 
-            if url == "":
-                handle_root(client)
-            elif url == "configure":
-                handle_configure(client, request)
-            else:
-                handle_not_found(client, url)
-
+                if url == "":
+                    handle_root(client)
+                elif url == "configure":
+                    handle_configure(client, request)
+                else:
+                    handle_not_found(client, url)
+            except Exception as e:
+                print(e)
         finally:
             client.close()
