@@ -2,7 +2,7 @@ from machine import *
 import machine
 import time
 #wifi
-# import mywifi 
+# import mywifi
 # import wifimgr
 import network
 import json
@@ -20,7 +20,7 @@ class T1():
     def wifi(self,SSID='ywzywz',PASS='12345678'):
         # self.wifiobj = mywifi.WIFI(SSID=SSID,PASS=PASS)
         self.wifiobj = network.WLAN(network.STA_IF) #wifimgr.get_connection() #"""return a working WLAN(STA_IF) instance or None"""
-    
+
     def mqttInit(self):
         self.c = MQTTClient(self.CLIENT_ID, self.SERVER,6002,self.username,self.password, keepalive = 120)
         # Subscribed messages will be delivered to this callback
@@ -31,7 +31,7 @@ class T1():
         # c.publish(TOPIC_UP,pubdata())
         self.c.check_msg() #检测接收并调用sub_cb
         # c.wait_msg() #阻塞直到收到一次结束阻塞
-    
+
     #整理上传格式--如果$dp主题
     def pubdata(self,data_name=[],data_value=[]):
         #arr是onenet的$dp主题
@@ -39,18 +39,18 @@ class T1():
         temp_list = []
         for ii in range(len(data_name)):
             temp_list.append({'id':data_name[ii],'datapoints':[{'value':data_value[ii]}]} )
-            data = {'datastreams':temp_list}
-            
-        j_d = json.dumps(data)
+        data = {'datastreams':temp_list}
+
+        j_d = json.dumps(data).encode('utf-8')
         j_l = len(j_d)
         arr = bytearray(j_l + 3)
         arr[0] = 1 #publish数据类型为json
         arr[1] = int(j_l / 256) # json数据长度 高位字节
         arr[2] = j_l % 256      # json数据长度 低位字节
-        arr[3:] = j_d.encode('ascii') # json数据
+        arr[3:] = j_d #('ascii') # json数据
         return arr
-        # return j_d  
-      
+        # return j_d
+
     #上传-默认$dp主题
     def publish(self,TOPIC='$dp',mydict={}):
         if TOPIC=='$dp':
