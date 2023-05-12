@@ -16,6 +16,10 @@ https://github.com/T-vK/ESP32-BLE-Keyboard
 |[NS摇杆](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d3jlPVx&id=640317236517&_u=628qvnn8eef4)|3.5+10||
 |[五向拨杆-可选](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8d3jlPVx&id=595134302480&_u=628qvnn88140)|0.78|10\*10\*9MM|
 |[排母10个](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.1e7a2e8dyMQyUj&id=13301626021&_u=628qvnn86f0d)|2.58|2\*10P|
+|贴片电阻0805封装10kΩ|--|--|
+|[单片机esp32版](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.5d6e2e8dPJCzFR&id=580133936548&_u=c28qvnn8661e)|21|任意|
+|[单片机nrf版](https://item.taobao.com/item.htm?spm=a1z09.2.0.0.5d6e2e8dPJCzFR&id=563254559292&_u=c28qvnn85659)|--|nrf方案则购买nrf52832(ND04, 推荐)或nrf52810(ND04C)|
+
 
 二合一
 ```
