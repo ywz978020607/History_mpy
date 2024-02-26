@@ -11,7 +11,11 @@ wlan = wifimgr.get_connection()
 ```
 import wifimgr_noscan
 wlan = wifimgr_noscan.get_connection()
+
+import wifimgr2
+wlan = wifimgr2.get_connection()
 ```
+
 
 
 # Related:
