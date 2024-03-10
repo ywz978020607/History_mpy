@@ -4,8 +4,10 @@ import ure
 import time
 from machine import reset
 
+# import pid
+# ap_ssid = "ESP_WIFI_" + pid.pid
 ap_ssid = "ESP_WIFI"
-ap_password = "12345678"
+ap_password = ""
 ap_authmode = 0 # 3 # WPA2
 
 NETWORK_PROFILES = 'wifi.dat'
@@ -16,6 +18,59 @@ wlan_sta = network.WLAN(network.STA_IF)
 
 server_socket = None
 
+def split_get_connection_connect():
+    """return a working WLAN(STA_IF) instance or None"""
+
+    # First check if there already is any connection:
+    if wlan_sta.isconnected():
+        return wlan_sta
+
+    connected = False
+    try:
+        # ESP connecting to WiFi takes time, wait a bit and try again:
+        time.sleep(3)
+        if wlan_sta.isconnected():
+            return wlan_sta
+
+        # Read known network profiles from file
+        profiles = read_profiles()
+
+        # Search WiFis in range
+        wlan_sta.active(True)
+        networks = wlan_sta.scan()
+
+        AUTHMODE = {0: "open", 1: "WEP", 2: "WPA-PSK", 3: "WPA2-PSK", 4: "WPA/WPA2-PSK"}
+        # for ssid in profiles:
+        #     password = profiles[ssid]
+        #     connected = do_connect(ssid, password)
+        #     if connected:
+        #         break
+        if not wlan_sta.isconnected():
+            for ssid, bssid, channel, rssi, authmode, hidden in sorted(networks, key=lambda x: x[3], reverse=True):
+                ssid = ssid.decode('utf-8')
+                encrypted = authmode > 0
+                print("ssid: %s chan: %d rssi: %d authmode: %s" % (ssid, channel, rssi, AUTHMODE.get(authmode, '?')))
+                if encrypted:
+                    if ssid in profiles:
+                        password = profiles[ssid]
+                        connected = do_connect(ssid, password)
+                    else:
+                        print("skipping unknown encrypted network")
+                else:  # open
+                    # connected = do_connect(ssid, None)
+                    pass
+                if connected:
+                    return wlan_sta
+    except OSError as e:
+        print("exception", str(e))
+
+    return None
+
+def split_get_connection_serve():
+    # start web server for connection manager:
+    wlan_sta.active(False)
+    connected = start()
+    return True if connected else False
 
 def get_connection():
     """return a working WLAN(STA_IF) instance or None"""
@@ -323,4 +378,4 @@ def start(port=80):
             except Exception as e:
                 print(e)
         finally:
-            client.close()
+            client.close() 
